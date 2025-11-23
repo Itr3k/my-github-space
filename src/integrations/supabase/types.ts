@@ -14,7 +14,186 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      blog_posts: {
+        Row: {
+          category: string
+          content: string | null
+          created_at: string
+          excerpt: string
+          id: number
+          image: string
+          read_time: string
+          title: string
+        }
+        Insert: {
+          category: string
+          content?: string | null
+          created_at?: string
+          excerpt: string
+          id?: number
+          image: string
+          read_time: string
+          title: string
+        }
+        Update: {
+          category?: string
+          content?: string | null
+          created_at?: string
+          excerpt?: string
+          id?: number
+          image?: string
+          read_time?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      case_studies: {
+        Row: {
+          category: string
+          challenge: string
+          client: string
+          created_at: string
+          full_description: string | null
+          headline: string
+          id: string
+          image: string
+          results: string
+          solution: string
+          stats: Json | null
+        }
+        Insert: {
+          category: string
+          challenge: string
+          client: string
+          created_at?: string
+          full_description?: string | null
+          headline: string
+          id: string
+          image: string
+          results: string
+          solution: string
+          stats?: Json | null
+        }
+        Update: {
+          category?: string
+          challenge?: string
+          client?: string
+          created_at?: string
+          full_description?: string | null
+          headline?: string
+          id?: string
+          image?: string
+          results?: string
+          solution?: string
+          stats?: Json | null
+        }
+        Relationships: []
+      }
+      contact_submissions: {
+        Row: {
+          area_of_interest: string | null
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          source: string
+        }
+        Insert: {
+          area_of_interest?: string | null
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          source: string
+        }
+        Update: {
+          area_of_interest?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          source?: string
+        }
+        Relationships: []
+      }
+      downloadable_items: {
+        Row: {
+          coming_soon: boolean | null
+          created_at: string
+          description: string
+          download_url: string | null
+          id: number
+          is_premium: boolean | null
+          size: string
+          title: string
+          type: string
+        }
+        Insert: {
+          coming_soon?: boolean | null
+          created_at?: string
+          description: string
+          download_url?: string | null
+          id?: number
+          is_premium?: boolean | null
+          size: string
+          title: string
+          type: string
+        }
+        Update: {
+          coming_soon?: boolean | null
+          created_at?: string
+          description?: string
+          download_url?: string | null
+          id?: number
+          is_premium?: boolean | null
+          size?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      library_items: {
+        Row: {
+          coming_soon: boolean | null
+          created_at: string
+          date: string | null
+          description: string
+          file_url: string | null
+          id: number
+          read_time: string
+          title: string
+          type: string
+        }
+        Insert: {
+          coming_soon?: boolean | null
+          created_at?: string
+          date?: string | null
+          description: string
+          file_url?: string | null
+          id?: number
+          read_time: string
+          title: string
+          type: string
+        }
+        Update: {
+          coming_soon?: boolean | null
+          created_at?: string
+          date?: string | null
+          description?: string
+          file_url?: string | null
+          id?: number
+          read_time?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
