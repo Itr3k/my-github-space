@@ -1,4 +1,4 @@
-import image_8320e13332163660193ffca7e227562749e71202 from 'figma:asset/8320e13332163660193ffca7e227562749e71202.png';
+import image_8320e13332163660193ffca7e227562749e71202 from '../assets/8320e13332163660193ffca7e227562749e71202.png';
 import React from 'react';
 import { Linkedin, Twitter, Github, ArrowRight, Facebook, Instagram, Youtube, Newspaper } from 'lucide-react';
 import { Link } from 'react-router-dom';
