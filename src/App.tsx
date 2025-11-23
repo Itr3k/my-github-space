@@ -10,6 +10,7 @@ import { Blog } from './components/Blog';
 import { BlogPostDetail } from './components/BlogPostDetail';
 import { CaseStudiesPage } from './components/CaseStudiesPage';
 import { CaseStudyDetail } from './components/CaseStudyDetail';
+import { Toaster } from './components/ui/sonner';
 
 import { ResourcesPage } from './components/ResourcesPage';
 import { About } from './components/About';
@@ -127,6 +128,7 @@ const App = () => {
           <Route path="*" element={<Home />} />
         </Routes>
       </Layout>
+      <Toaster />
     </Router>
   );
 };
