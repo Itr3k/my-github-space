@@ -1,8 +1,62 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Mail, Phone, MapPin, ArrowRight, Send, Clock, CheckCircle2, Twitter, Linkedin, Github, Youtube } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Twitter, Linkedin, Github, Youtube } from 'lucide-react';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+const consultationFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().email("Invalid email address").max(255),
+  company: z.string().max(100).optional(),
+  areaOfInterest: z.string().max(100).optional(),
+  message: z.string().min(10, "Message must be at least 10 characters").max(2000),
+});
 
 export const BookConsultation = () => {
+  const form = useForm<z.infer<typeof consultationFormSchema>>({
+    resolver: zodResolver(consultationFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      company: "",
+      areaOfInterest: "",
+      message: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof consultationFormSchema>) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('submit-contact', {
+        body: {
+          ...values,
+          source: 'consultation',
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success(data.message || "Consultation request sent successfully!");
+      form.reset();
+    } catch (error: any) {
+      console.error('Error submitting form:', error);
+      toast.error(error.message || "Failed to send request. Please try again.");
+    }
+  };
+
   return (
     <div className="pt-32 pb-24 px-6 min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -43,83 +97,117 @@ export const BookConsultation = () => {
                {/* Form Header */}
                <h3 className="text-2xl font-bold text-white mb-8">Send us a message</h3>
                
-               <form className="space-y-6">
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">First Name</label>
-                      <input 
-                        type="text" 
-                        placeholder="John"
-                        className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.05] transition-all" 
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Last Name</label>
-                      <input 
-                        type="text" 
-                        placeholder="Doe"
-                        className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.05] transition-all" 
-                      />
-                    </div>
-                 </div>
-                 
-                 <div className="space-y-2">
-                    <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Email</label>
-                    <input 
-                      type="email" 
-                      placeholder="john@company.com"
-                      className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.05] transition-all" 
-                    />
-                 </div>
-                 
-                 <div className="space-y-2">
-                    <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Company</label>
-                    <input 
-                      type="text" 
-                      placeholder="Your Company"
-                      className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.05] transition-all" 
-                    />
-                 </div>
+               <Form {...form}>
+                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                   <FormField
+                     control={form.control}
+                     name="name"
+                     render={({ field }) => (
+                       <FormItem>
+                         <FormLabel className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Full Name</FormLabel>
+                         <FormControl>
+                           <Input 
+                             placeholder="John Doe"
+                             className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700"
+                             {...field} 
+                           />
+                         </FormControl>
+                         <FormMessage />
+                       </FormItem>
+                     )}
+                   />
+                   
+                   <FormField
+                     control={form.control}
+                     name="email"
+                     render={({ field }) => (
+                       <FormItem>
+                         <FormLabel className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Email</FormLabel>
+                         <FormControl>
+                           <Input 
+                             type="email"
+                             placeholder="john@company.com"
+                             className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700"
+                             {...field} 
+                           />
+                         </FormControl>
+                         <FormMessage />
+                       </FormItem>
+                     )}
+                   />
+                   
+                   <FormField
+                     control={form.control}
+                     name="company"
+                     render={({ field }) => (
+                       <FormItem>
+                         <FormLabel className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Company (Optional)</FormLabel>
+                         <FormControl>
+                           <Input 
+                             placeholder="Your Company"
+                             className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700"
+                             {...field} 
+                           />
+                         </FormControl>
+                         <FormMessage />
+                       </FormItem>
+                     )}
+                   />
 
-                 <div className="space-y-2">
-                    <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Area of Interest</label>
-                    <div className="relative">
-                      <select defaultValue="" className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.05] transition-all appearance-none">
-                        <option value="" disabled>What solution interests you?</option>
-                        <option value="strategy" className="bg-[#0A0A0F]">AI Strategy & Consulting</option>
-                        <option value="voice" className="bg-[#0A0A0F]">Voice AI Agents</option>
-                        <option value="workflow" className="bg-[#0A0A0F]">Workflow Automation</option>
-                        <option value="custom" className="bg-[#0A0A0F]">Custom Development</option>
-                      </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
-                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </div>
-                    </div>
-                 </div>
-                 
-                 <div className="space-y-2">
-                    <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Message</label>
-                    <textarea 
-                      rows={5} 
-                      placeholder="Tell us about your project..."
-                      className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.05] transition-all resize-none" 
-                    />
-                 </div>
-                 
-                 <button type="button" className="w-full py-4 bg-white text-black rounded-full font-bold hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]">
-                   Send Message
-                   <Send className="w-4 h-4" />
-                 </button>
+                   <FormField
+                     control={form.control}
+                     name="areaOfInterest"
+                     render={({ field }) => (
+                       <FormItem>
+                         <FormLabel className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Area of Interest (Optional)</FormLabel>
+                         <FormControl>
+                           <Input 
+                             placeholder="e.g., AI Strategy, Voice AI, Automation"
+                             className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700"
+                             {...field} 
+                           />
+                         </FormControl>
+                         <FormMessage />
+                       </FormItem>
+                     )}
+                   />
+                   
+                   <FormField
+                     control={form.control}
+                     name="message"
+                     render={({ field }) => (
+                       <FormItem>
+                         <FormLabel className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Message</FormLabel>
+                         <FormControl>
+                           <Textarea 
+                             rows={5} 
+                             placeholder="Tell us about your project..."
+                             className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 resize-none"
+                             {...field} 
+                           />
+                         </FormControl>
+                         <FormMessage />
+                       </FormItem>
+                     )}
+                   />
+                   
+                   <Button 
+                     type="submit" 
+                     className="w-full py-4 bg-white text-black rounded-full font-bold hover:bg-zinc-200 flex items-center justify-center gap-2 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]"
+                     disabled={form.formState.isSubmitting}
+                   >
+                     {form.formState.isSubmitting ? "Sending..." : "Send Message"}
+                     <Send className="w-4 h-4" />
+                   </Button>
 
-                 <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                    <div className="w-4 h-4 mt-0.5 text-zinc-500">🔒</div>
-                    <p className="text-xs text-zinc-500 leading-relaxed">
-                      Your privacy matters. We will only use your contact information to respond to your inquiry. We never share your data with third parties.
-                    </p>
-                 </div>
-               </form>
+                   <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
+                      <div className="w-4 h-4 mt-0.5 text-zinc-500">🔒</div>
+                      <p className="text-xs text-zinc-500 leading-relaxed">
+                        Your privacy matters. We will only use your contact information to respond to your inquiry. We never share your data with third parties.
+                      </p>
+                   </div>
+                 </form>
+               </Form>
             </motion.div>
           </div>
 

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, Calendar, Clock, User, Share2, ArrowRight, Twitter, Linkedin, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import DOMPurify from 'dompurify';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { getBlogPostById, getLatestPosts } from '../services/api';
 import { BlogPost } from '../types';
@@ -178,7 +179,12 @@ export const BlogPostDetail = () => {
         <div className="prose prose-invert prose-lg max-w-none">
            {/* Render HTML content safely */}
            {post.content ? (
-             <div dangerouslySetInnerHTML={{ __html: post.content }} />
+             <div dangerouslySetInnerHTML={{ 
+               __html: DOMPurify.sanitize(post.content, {
+                 ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'u', 'a', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'br', 'img'],
+                 ALLOWED_ATTR: ['href', 'class', 'src', 'alt', 'target', 'rel']
+               })
+             }} />
            ) : (
              <p className="text-zinc-400">Content coming soon...</p>
            )}
