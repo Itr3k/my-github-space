@@ -2,7 +2,7 @@ import { CASE_STUDIES } from '../data/caseStudies';
 import { LIBRARY_ITEMS, DOWNLOADABLE_ITEMS, RESOURCE_CATEGORIES } from '../data/resources';
 import { LATEST_POSTS } from '../data/blog';
 import { CaseStudy, LibraryItem, DownloadableItem, BlogPost, ResourceCategory } from '../types';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 
 // Set to false to use real database data
 const USE_MOCK_DATA = false;
@@ -81,7 +81,7 @@ const getRealBlogPostById = async (id: string | number): Promise<BlogPost | unde
   const { data, error } = await supabase
     .from('blog_posts')
     .select('*')
-    .eq('id', id)
+    .eq('id', Number(id))
     .maybeSingle();
   
   if (error || !data) return undefined;
