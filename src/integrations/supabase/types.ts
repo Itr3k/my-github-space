@@ -16,34 +16,73 @@ export type Database = {
     Tables: {
       blog_posts: {
         Row: {
+          author_image: string | null
+          author_name: string | null
+          author_role: string | null
+          bg: string | null
+          border: string | null
           category: string
+          color: string | null
           content: string | null
           created_at: string
+          date: string | null
           excerpt: string
           id: number
           image: string
+          meta_description: string | null
+          meta_keywords: string | null
           read_time: string
+          scheduled_for: string | null
+          status: string | null
+          tags: string[] | null
           title: string
+          views: number | null
         }
         Insert: {
+          author_image?: string | null
+          author_name?: string | null
+          author_role?: string | null
+          bg?: string | null
+          border?: string | null
           category: string
+          color?: string | null
           content?: string | null
           created_at?: string
+          date?: string | null
           excerpt: string
           id?: number
           image: string
+          meta_description?: string | null
+          meta_keywords?: string | null
           read_time: string
+          scheduled_for?: string | null
+          status?: string | null
+          tags?: string[] | null
           title: string
+          views?: number | null
         }
         Update: {
+          author_image?: string | null
+          author_name?: string | null
+          author_role?: string | null
+          bg?: string | null
+          border?: string | null
           category?: string
+          color?: string | null
           content?: string | null
           created_at?: string
+          date?: string | null
           excerpt?: string
           id?: number
           image?: string
+          meta_description?: string | null
+          meta_keywords?: string | null
           read_time?: string
+          scheduled_for?: string | null
+          status?: string | null
+          tags?: string[] | null
           title?: string
+          views?: number | null
         }
         Relationships: []
       }
