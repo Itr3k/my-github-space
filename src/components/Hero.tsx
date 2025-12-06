@@ -40,7 +40,7 @@ export const Hero = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-xs font-medium text-zinc-300 tracking-wide">Accepting New Enterprise Clients for Q4</span>
+            <span className="text-xs font-medium text-zinc-300 tracking-wide">Accepting New Enterprise Clients for Q1</span>
           </div>
           
           <h1 className="text-6xl md:text-8xl font-bold text-white tracking-tight leading-[0.95]">

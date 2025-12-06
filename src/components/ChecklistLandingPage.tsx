@@ -94,7 +94,7 @@ export const ChecklistLandingPage = () => {
               <FileText className="w-4 h-4" /> PDF Format
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" /> Updated Q4 2025
+              <CheckCircle2 className="w-4 h-4" /> Updated Q1 2025
             </div>
           </div>
         </motion.div>
