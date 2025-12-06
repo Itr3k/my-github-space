@@ -363,16 +363,57 @@ serve(async (req) => {
 
     console.log("Blog post created successfully:", post.id);
 
+    // Trigger Editor Agent for quality control review
+    let editorReview = null;
+    try {
+      console.log("Triggering Editor Agent for QC review...");
+      const editorResponse = await fetch(`${supabaseUrl}/functions/v1/editor-agent`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseServiceKey}`,
+        },
+        body: JSON.stringify({
+          blogPostId: post.id,
+          content: blogContent.content,
+          title: blogContent.title,
+          excerpt: blogContent.excerpt,
+          metaDescription: blogContent.metaDescription,
+          tags: blogContent.tags
+        }),
+      });
+
+      if (editorResponse.ok) {
+        const reviewData = await editorResponse.json();
+        editorReview = reviewData.review;
+        console.log(`Editor review complete. Score: ${editorReview?.overallScore || 'N/A'}`);
+      } else {
+        console.log("Editor agent review skipped or failed");
+      }
+    } catch (editorError) {
+      console.error("Editor agent error (non-fatal):", editorError);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
-        message: "Blog post generated and published successfully",
+        message: editorReview?.shouldAutoPublish 
+          ? "Blog post generated, reviewed, and published successfully" 
+          : "Blog post generated and sent for review",
         post: {
           id: post.id,
           title: post.title,
           category: post.category,
           image: post.image
-        }
+        },
+        editorReview: editorReview ? {
+          overallScore: editorReview.overallScore,
+          autoPublished: editorReview.shouldAutoPublish,
+          factCheckScore: editorReview.factCheck?.score,
+          seoScore: editorReview.seoAudit?.score,
+          brandVoiceScore: editorReview.brandVoice?.score,
+          engagementScore: editorReview.engagement?.score
+        } : null
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
