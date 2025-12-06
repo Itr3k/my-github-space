@@ -1,50 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Slider from 'react-slick';
 import { motion } from 'motion/react';
 import { ArrowRight, Pause, Play } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Link } from 'react-router-dom';
-
-import { getCaseStudies } from '../services/api';
-import { CaseStudy } from '../types';
-
-// Custom Arrow Components (Hidden but needed for ref usage if we wanted them)
-function EmptyArrow(props: any) { return null; }
+import { useCaseStudies } from '@/hooks/useData';
 
 export const HomeCaseStudyCarousel = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const sliderRef = useRef<Slider>(null);
 
-  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const data = await getCaseStudies();
-        setCaseStudies(data);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-
+  const { data: caseStudies = [], isLoading } = useCaseStudies();
 
   const settings = {
     dots: true,
     infinite: true,
-    speed: 1000, // Slow fade transition
-    fade: true, // Fade effect
+    speed: 1000,
+    fade: true,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 6000, // 6 seconds per slide
+    autoplaySpeed: 6000,
     pauseOnHover: true,
     arrows: false,
     beforeChange: (_: number, newIndex: number) => {
@@ -75,8 +52,28 @@ export const HomeCaseStudyCarousel = () => {
   };
 
   if (isLoading) {
-    return <div className="py-24 px-6 bg-[#0A0A0F] min-h-[600px] flex items-center justify-center text-white/50">Loading stories...</div>;
+    return (
+      <section className="py-24 px-6 bg-[#0A0A0F] relative overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="animate-pulse space-y-8">
+            <div className="flex justify-between items-end">
+              <div className="space-y-4">
+                <div className="h-10 w-64 bg-white/10 rounded" />
+                <div className="h-6 w-96 bg-white/5 rounded" />
+              </div>
+              <div className="flex gap-2">
+                <div className="w-12 h-12 rounded-full bg-white/5" />
+                <div className="w-12 h-12 rounded-full bg-white/5" />
+              </div>
+            </div>
+            <div className="h-[600px] bg-white/5 rounded-3xl" />
+          </div>
+        </div>
+      </section>
+    );
   }
+
+  if (!caseStudies.length) return null;
 
   return (
     <section className="py-24 px-6 bg-[#0A0A0F] relative overflow-hidden">
@@ -133,25 +130,20 @@ export const HomeCaseStudyCarousel = () => {
                       alt={story.client}
                       className="w-full h-full object-cover transition-transform duration-[10000ms] ease-linear scale-100 group-hover:scale-105"
                     />
-                    {/* Overlay to ensure text contrast if needed, mostly for the right side on desktop */}
                     <div className="absolute inset-0 bg-black/20" />
                   </div>
 
                   {/* Content Overlay Container */}
-                  {/* Desktop: Left Side Panel | Mobile: Bottom Sheet */}
                   <div
                     className={`
                         absolute z-10 flex flex-col justify-center
-                        /* Mobile Styles */
                         inset-x-0 bottom-0 pt-32 pb-12 px-6
                         bg-gradient-to-t from-black via-black/90 to-transparent
                         
-                        /* Desktop Styles */
                         md:inset-y-0 md:left-0 md:right-auto md:w-[500px] md:pt-12 md:pb-12 md:px-12
                         md:bg-black/40 md:backdrop-blur-xl md:border-r md:border-white/10 md:bg-none
                       `}
                   >
-                    {/* Mobile Blur Mask (Optional enhancement for mobile text readability) */}
                     <div className="md:hidden absolute inset-0 backdrop-blur-md -z-10" style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 40%)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 40%)' }} />
 
                     <div className="relative">
