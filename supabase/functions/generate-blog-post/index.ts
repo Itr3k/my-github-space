@@ -87,21 +87,49 @@ async function generateBlogContent(topic: string, category: string, lovableApiKe
 
 Your task is to write professional, engaging, and highly optimized blog posts about AI topics for business professionals.
 
-IMPORTANT GUIDELINES:
-- Write in a professional yet approachable tone
-- Use proper heading structure (H2, H3) for SEO
-- Include actionable insights and real-world examples
-- Optimize for featured snippets and answer boxes
-- Target business decision-makers and executives
-- Include statistics and data where relevant
+IMPORTANT CONTENT STRUCTURE (follow this exactly):
+1. Introduction paragraph (2-3 sentences setting up the problem/opportunity)
+
+2. "The Problem" section (H2) - Describe the challenge businesses face
+   - Use bullet points with **bold lead-ins** like:
+     - **The Pain Point:** Description of the specific issue...
+     - **The Impact:** How this affects business outcomes...
+
+3. "The Solution" section (H2) - Introduce the AI-powered solution
+   - Clear explanation of how AI addresses the problem
+   - Include specific, actionable steps
+
+4. "Implementation Stages" section (H2) with 3-4 numbered stages:
+   - **Stage 1: Assessment** - Describe what happens in this stage
+   - **Stage 2: Planning** - Describe planning activities
+   - **Stage 3: Execution** - Describe implementation
+   - **Stage 4: Optimization** - Describe ongoing improvements
+
+5. "Pro Tip" section - A blockquote with expert advice:
+   <blockquote class="pro-tip">
+   <strong>Pro Tip:</strong> Your expert insight here...
+   </blockquote>
+
+6. "Key Takeaways" section (H2) with bullet points:
+   - **Takeaway 1:** Summary point
+   - **Takeaway 2:** Summary point
+   - **Takeaway 3:** Summary point
+
+7. Conclusion paragraph with call-to-action mentioning Elevated AI's consulting services
+
+FORMATTING RULES:
+- Use H2 tags for main sections
+- Use H3 tags for subsections
+- Use bullet points with **bold lead-ins** (text before colon should be bold)
+- Include the Pro Tip blockquote with class="pro-tip"
 - Write 1200-1500 words of substantive content
-- Use short paragraphs for readability
+- Use short paragraphs (2-3 sentences max)
 
 OUTPUT FORMAT (JSON):
 {
   "title": "SEO-optimized title (max 60 chars)",
   "excerpt": "Compelling meta description (max 155 chars)",
-  "content": "Full HTML content with proper heading tags (h2, h3), paragraphs, lists, and formatting",
+  "content": "Full HTML content following the structure above",
   "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
   "metaDescription": "SEO meta description (max 155 chars)",
   "metaKeywords": "comma, separated, keywords",
@@ -112,15 +140,12 @@ OUTPUT FORMAT (JSON):
 
 Category: ${category}
 
-Requirements:
-1. Create an engaging, clickable title optimized for search
-2. Write a compelling excerpt that drives clicks
-3. Structure content with H2 and H3 headings for featured snippets
-4. Include an introduction, 4-5 main sections, and a conclusion
-5. Add bullet points and numbered lists where appropriate
-6. Include a call-to-action mentioning Elevated AI's consulting services
-7. Generate 5 relevant SEO tags
-8. Estimate realistic read time
+Follow the exact structure from the system prompt with:
+- Problem/Solution format
+- Implementation Stages
+- Pro Tip blockquote
+- Key Takeaways
+- Bold lead-ins on all bullet points
 
 The content should establish Elevated AI as a thought leader in AI consulting.`;
 
@@ -160,13 +185,26 @@ The content should establish Elevated AI as a thought leader in AI consulting.`;
 async function generateBlogImage(title: string, category: string, lovableApiKey: string): Promise<string> {
   console.log(`Generating image for: ${title}`);
   
-  const imagePrompt = `Professional business blog header image for an article titled "${title}". 
-Category: ${category}. 
-Style: Modern, clean, corporate, technology-focused. 
-Elements: Abstract AI visualization, neural networks, futuristic tech patterns, professional blue and purple gradient tones.
+  // Map categories to relevant professional photo subjects
+  const categorySubjects: Record<string, string> = {
+    "AI in the Workplace": "modern office environment, professionals collaborating around computers, diverse team meeting in glass-walled conference room",
+    "AI Consulting": "business consultant presenting to executives, professional meeting room, laptop and documents on table",
+    "AI Tips": "professional at desk using laptop, clean modern workspace, productivity setup with monitor and coffee",
+    "AI Thought Leadership": "executive giving presentation, TED-talk style setting, professional speaker at podium",
+    "AI Services": "technology team working together, server room with professionals, enterprise software development",
+    "AI News": "business newspaper and tablet, professional reading news, modern newsroom or press setting"
+  };
+
+  const subject = categorySubjects[category] || "professional business environment, modern office, executives in meeting";
+  
+  const imagePrompt = `Photorealistic professional photography for business blog article. 
+Subject: ${subject}
+Style: High-end corporate photography, natural lighting, shallow depth of field, clean and modern aesthetic.
+Mood: Professional, approachable, trustworthy, innovative.
+Technical: Shot on Canon EOS R5, 85mm lens, f/2.8, natural window lighting, color graded for business publication.
 Aspect ratio: 16:9 landscape format.
-Quality: Ultra high resolution, suitable for web publishing.
-NO text or words in the image.`;
+Quality: Ultra high resolution, suitable for hero image on professional website.
+IMPORTANT: No text, no logos, no artificial overlays. Pure photography only.`;
 
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
