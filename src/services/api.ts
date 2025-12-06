@@ -4,8 +4,8 @@ import { LATEST_POSTS } from '../data/blog';
 import { CaseStudy, LibraryItem, DownloadableItem, BlogPost, ResourceCategory } from '../types';
 import { supabase } from '../lib/supabaseClient';
 
-// TOGGLE THIS TO FALSE WHEN YOU CONNECT SUPABASE
-const USE_MOCK_DATA = true;
+// Set to false to use real database data
+const USE_MOCK_DATA = false;
 
 // --- MOCK DATA FUNCTIONS ---
 
@@ -16,13 +16,11 @@ const getMockDownloadableItems = (): DownloadableItem[] => DOWNLOADABLE_ITEMS;
 const getMockLatestPosts = (): BlogPost[] => LATEST_POSTS;
 const getMockBlogPostById = (id: string | number): BlogPost | undefined => LATEST_POSTS.find(post => post.id.toString() === id.toString());
 
-// --- REAL SUPABASE FUNCTIONS (Ready to use) ---
+// --- REAL SUPABASE FUNCTIONS ---
 
 const getRealCaseStudies = async (): Promise<CaseStudy[]> => {
   const { data, error } = await supabase.from('case_studies').select('*');
   if (error) throw error;
-  // Need to map icon strings back to Lucide icons if stored as text, 
-  // or handle mapping in the component. For now, we return data as is.
   return data as any; 
 };
 
@@ -45,15 +43,69 @@ const getRealDownloadableItems = async (): Promise<DownloadableItem[]> => {
 };
 
 const getRealLatestPosts = async (): Promise<BlogPost[]> => {
-  const { data, error } = await supabase.from('blog_posts').select('*').limit(4);
-  if (error) throw error;
-  return data as unknown as BlogPost[];
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('status', 'published')
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching blog posts:', error);
+    throw error;
+  }
+  
+  // Map database fields to BlogPost interface
+  return (data || []).map(post => ({
+    id: post.id,
+    title: post.title,
+    excerpt: post.excerpt,
+    category: post.category,
+    readTime: post.read_time,
+    image: post.image,
+    content: post.content,
+    date: post.date,
+    views: post.views?.toString(),
+    author: {
+      name: post.author_name || 'Elevated AI Team',
+      role: post.author_role || 'AI Consulting Experts',
+      image: post.author_image || '/placeholder.svg'
+    },
+    color: post.color,
+    bg: post.bg,
+    border: post.border,
+    tags: post.tags || []
+  }));
 };
 
 const getRealBlogPostById = async (id: string | number): Promise<BlogPost | undefined> => {
-  const { data, error } = await supabase.from('blog_posts').select('*').eq('id', id).single();
-  if (error) return undefined;
-  return data as unknown as BlogPost;
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  
+  if (error || !data) return undefined;
+  
+  return {
+    id: data.id,
+    title: data.title,
+    excerpt: data.excerpt,
+    category: data.category,
+    readTime: data.read_time,
+    image: data.image,
+    content: data.content,
+    date: data.date,
+    views: data.views?.toString(),
+    author: {
+      name: data.author_name || 'Elevated AI Team',
+      role: data.author_role || 'AI Consulting Experts',
+      image: data.author_image || '/placeholder.svg'
+    },
+    color: data.color,
+    bg: data.bg,
+    border: data.border,
+    tags: data.tags || []
+  };
 };
 
 // --- EXPORTED API ---
@@ -88,7 +140,36 @@ export const getBlogPostById = async (id: string | number): Promise<BlogPost | u
   return getRealBlogPostById(id);
 };
 
-// Categories are usually static app config, so we keep them local
+// Categories are static app config
 export const getResourceCategories = (): ResourceCategory[] => {
   return RESOURCE_CATEGORIES;
+};
+
+// --- BLOG GENERATION API ---
+
+export const generateBlogPost = async (topic?: string, category?: string): Promise<{
+  success: boolean;
+  message: string;
+  post?: { id: number; title: string; category: string; image: string };
+  error?: string;
+}> => {
+  try {
+    const { data, error } = await supabase.functions.invoke('generate-blog-post', {
+      body: { topic, category }
+    });
+
+    if (error) {
+      console.error('Error generating blog post:', error);
+      return { success: false, message: 'Failed to generate blog post', error: error.message };
+    }
+
+    return data;
+  } catch (err) {
+    console.error('Error calling generate-blog-post:', err);
+    return { 
+      success: false, 
+      message: 'Failed to generate blog post', 
+      error: err instanceof Error ? err.message : 'Unknown error' 
+    };
+  }
 };
