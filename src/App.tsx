@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Home } from './components/Home';
@@ -11,6 +12,16 @@ import { BlogPostDetail } from './components/BlogPostDetail';
 import { CaseStudiesPage } from './components/CaseStudiesPage';
 import { CaseStudyDetail } from './components/CaseStudyDetail';
 import { Toaster } from './components/ui/sonner';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 30 * 60 * 1000, // 30 minutes  
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 import { ResourcesPage } from './components/ResourcesPage';
 import { About } from './components/About';
@@ -106,30 +117,32 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/book-consultation" element={<BookConsultation />} />
-          <Route path="/solutions" element={<Solutions />} />
-          <Route path="/solutions/:id" element={<SolutionDetail />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:id" element={<BlogPostDetail />} />
-          <Route path="/case-studies" element={<CaseStudiesPage />} />
-          <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
-          <Route path="/resources" element={<ResourcesPage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/start" element={<ProjectWizard />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfService />} />
-          <Route path="/checklist" element={<ChecklistLandingPage />} />
-          {/* Catch-all redirect to Home */}
-          <Route path="*" element={<Home />} />
-        </Routes>
-      </Layout>
-      <Toaster />
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/book-consultation" element={<BookConsultation />} />
+            <Route path="/solutions" element={<Solutions />} />
+            <Route path="/solutions/:id" element={<SolutionDetail />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:id" element={<BlogPostDetail />} />
+            <Route path="/case-studies" element={<CaseStudiesPage />} />
+            <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
+            <Route path="/resources" element={<ResourcesPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/start" element={<ProjectWizard />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/checklist" element={<ChecklistLandingPage />} />
+            {/* Catch-all redirect to Home */}
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </Layout>
+        <Toaster />
+      </Router>
+    </QueryClientProvider>
   );
 };
 
