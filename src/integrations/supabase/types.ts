@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_analytics: {
+        Row: {
+          avg_time_on_page: number | null
+          blog_post_id: number | null
+          bounce_rate: number | null
+          comments: number | null
+          created_at: string
+          id: number
+          page_views: number | null
+          scroll_depth: number | null
+          social_shares: number | null
+          tracked_date: string | null
+          unique_visitors: number | null
+        }
+        Insert: {
+          avg_time_on_page?: number | null
+          blog_post_id?: number | null
+          bounce_rate?: number | null
+          comments?: number | null
+          created_at?: string
+          id?: number
+          page_views?: number | null
+          scroll_depth?: number | null
+          social_shares?: number | null
+          tracked_date?: string | null
+          unique_visitors?: number | null
+        }
+        Update: {
+          avg_time_on_page?: number | null
+          blog_post_id?: number | null
+          bounce_rate?: number | null
+          comments?: number | null
+          created_at?: string
+          id?: number
+          page_views?: number | null
+          scroll_depth?: number | null
+          social_shares?: number | null
+          tracked_date?: string | null
+          unique_visitors?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_analytics_blog_post_id_fkey"
+            columns: ["blog_post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blog_posts: {
         Row: {
           author_image: string | null
@@ -83,6 +133,45 @@ export type Database = {
           tags?: string[] | null
           title?: string
           views?: number | null
+        }
+        Relationships: []
+      }
+      brand_voice_profile: {
+        Row: {
+          created_at: string
+          example_excerpts: Json | null
+          forbidden_terms: string[] | null
+          id: number
+          key_phrases: string[] | null
+          last_synced_at: string
+          source: string
+          tone_descriptors: string[] | null
+          topics_covered: string[] | null
+          writing_style_notes: string | null
+        }
+        Insert: {
+          created_at?: string
+          example_excerpts?: Json | null
+          forbidden_terms?: string[] | null
+          id?: number
+          key_phrases?: string[] | null
+          last_synced_at?: string
+          source?: string
+          tone_descriptors?: string[] | null
+          topics_covered?: string[] | null
+          writing_style_notes?: string | null
+        }
+        Update: {
+          created_at?: string
+          example_excerpts?: Json | null
+          forbidden_terms?: string[] | null
+          id?: number
+          key_phrases?: string[] | null
+          last_synced_at?: string
+          source?: string
+          tone_descriptors?: string[] | null
+          topics_covered?: string[] | null
+          writing_style_notes?: string | null
         }
         Relationships: []
       }
@@ -197,6 +286,53 @@ export type Database = {
         }
         Relationships: []
       }
+      editor_reviews: {
+        Row: {
+          ai_reasoning: string | null
+          blog_post_id: number | null
+          corrections_made: Json | null
+          edited_content: string | null
+          id: number
+          issues_found: Json | null
+          original_content: string | null
+          review_type: string
+          reviewed_at: string
+          score: number | null
+        }
+        Insert: {
+          ai_reasoning?: string | null
+          blog_post_id?: number | null
+          corrections_made?: Json | null
+          edited_content?: string | null
+          id?: number
+          issues_found?: Json | null
+          original_content?: string | null
+          review_type: string
+          reviewed_at?: string
+          score?: number | null
+        }
+        Update: {
+          ai_reasoning?: string | null
+          blog_post_id?: number | null
+          corrections_made?: Json | null
+          edited_content?: string | null
+          id?: number
+          issues_found?: Json | null
+          original_content?: string | null
+          review_type?: string
+          reviewed_at?: string
+          score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "editor_reviews_blog_post_id_fkey"
+            columns: ["blog_post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       library_items: {
         Row: {
           coming_soon: boolean | null
@@ -232,6 +368,50 @@ export type Database = {
           type?: string
         }
         Relationships: []
+      }
+      topic_recommendations: {
+        Row: {
+          category: string
+          created_at: string
+          id: number
+          keywords: string[] | null
+          reasoning: string | null
+          similar_to_post_id: number | null
+          status: string | null
+          topic_title: string
+          trending_score: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: number
+          keywords?: string[] | null
+          reasoning?: string | null
+          similar_to_post_id?: number | null
+          status?: string | null
+          topic_title: string
+          trending_score?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: number
+          keywords?: string[] | null
+          reasoning?: string | null
+          similar_to_post_id?: number | null
+          status?: string | null
+          topic_title?: string
+          trending_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_recommendations_similar_to_post_id_fkey"
+            columns: ["similar_to_post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

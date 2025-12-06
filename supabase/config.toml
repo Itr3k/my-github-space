@@ -5,3 +5,12 @@ verify_jwt = false
 
 [functions.generate-blog-post]
 verify_jwt = false
+
+[functions.editor-agent]
+verify_jwt = false
+
+[functions.sync-substack]
+verify_jwt = false
+
+[functions.analytics-recommender]
+verify_jwt = false
