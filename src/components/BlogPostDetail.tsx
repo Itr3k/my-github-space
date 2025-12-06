@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, Calendar, Clock, User, Share2, ArrowRight, Twitter, Linkedin, Copy, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import DOMPurify from 'dompurify';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { getBlogPostById, getLatestPosts } from '../services/api';
-import { BlogPost } from '../types';
+import { useBlogPost, useBlogPosts } from '@/hooks/useData';
 import {
   Popover,
   PopoverContent,
@@ -15,9 +14,10 @@ import {
 
 export const BlogPostDetail = () => {
    const { id } = useParams();
-   const [post, setPost] = useState<BlogPost | undefined>(undefined);
-   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
-   const [isLoading, setIsLoading] = useState(true);
+   const { data: post, isLoading } = useBlogPost(id);
+   const { data: allPosts = [] } = useBlogPosts();
+   
+   const relatedPosts = allPosts.filter(p => String(p.id) !== String(id)).slice(0, 3);
 
    const handleShare = (platform: 'twitter' | 'linkedin' | 'copy') => {
      const url = window.location.href;
@@ -33,32 +33,24 @@ export const BlogPostDetail = () => {
      }
    };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      if (id) {
-        try {
-          const data = await getBlogPostById(id);
-          setPost(data);
-          
-          // Fetch related posts (just using latest posts for now, excluding current)
-          const allPosts = await getLatestPosts();
-          setRelatedPosts(allPosts.filter(p => p.id.toString() !== id).slice(0, 3));
-        } catch (error) {
-          console.error("Failed to fetch blog post", error);
-        }
-      }
-      setIsLoading(false);
-    };
-
-    fetchData();
-    window.scrollTo(0, 0);
-  }, [id]);
-
   if (isLoading) {
     return (
-      <div className="min-h-screen pt-32 pb-24 flex items-center justify-center text-center px-6 bg-[#050508]">
-        <div className="text-indigo-500 animate-pulse">Loading Article...</div>
+      <div className="pt-24 pb-24 min-h-screen bg-[#050508]">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="animate-pulse space-y-8">
+            <div className="h-4 w-48 bg-white/10 rounded" />
+            <div className="aspect-video bg-white/5 rounded-xl" />
+            <div className="space-y-4">
+              <div className="h-10 w-3/4 bg-white/10 rounded" />
+              <div className="h-6 w-1/2 bg-white/5 rounded" />
+            </div>
+            <div className="space-y-3">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="h-4 bg-white/5 rounded" style={{ width: `${100 - i * 5}%` }} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -1,32 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-
-import { getCaseStudyById } from '../services/api';
-import { CaseStudy } from '../types';
+import { useCaseStudy } from '@/hooks/useData';
 
 export const CaseStudyDetail = () => {
   const { id } = useParams();
-  const [study, setStudy] = useState<CaseStudy | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (id) {
-      setIsLoading(true);
-      // Simulate async fetch
-      getCaseStudyById(id).then(data => {
-        setStudy(data);
-        setIsLoading(false);
-      });
-    }
-  }, [id]);
+  const { data: study, isLoading } = useCaseStudy(id);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pt-32 pb-24 flex items-center justify-center text-center px-6 bg-[#050508]">
-        <div className="text-indigo-500 animate-pulse">Loading...</div>
+      <div className="min-h-screen pt-32 pb-24 bg-[#050508]">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="animate-pulse space-y-8">
+            <div className="h-4 w-32 bg-white/10 rounded" />
+            <div className="space-y-4">
+              <div className="h-8 w-3/4 bg-white/10 rounded" />
+              <div className="h-6 w-1/2 bg-white/10 rounded" />
+            </div>
+            <div className="h-[400px] bg-white/5 rounded-3xl" />
+          </div>
+        </div>
       </div>
     );
   }

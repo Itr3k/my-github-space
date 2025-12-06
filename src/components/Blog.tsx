@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Calendar, Eye, ArrowRight, ChevronDown, Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { getLatestPosts } from '../services/api';
+import { useBlogPosts } from '@/hooks/useData';
 import { BlogPost } from '../types';
 
 const CATEGORIES = ["All Categories", "AI in the Workplace", "AI Consulting", "AI Tips", "AI Thought Leadership", "AI Services", "AI News"];
@@ -14,24 +14,9 @@ export const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setIsLoading(true);
-      try {
-        const data = await getLatestPosts();
-        setPosts(data);
-      } catch (error) {
-        console.error("Failed to fetch posts", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchPosts();
-  }, []);
+  
+  const { data: posts = [], isLoading } = useBlogPosts();
 
   // Sync URL params with state
   useEffect(() => {
@@ -126,8 +111,29 @@ export const Blog = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pt-32 pb-24 flex items-center justify-center bg-[#050508]">
-        <div className="text-indigo-500 animate-pulse">Loading Insights...</div>
+      <div className="pt-32 pb-24 min-h-screen bg-[#050508]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="animate-pulse space-y-8">
+            <div className="text-center space-y-4">
+              <div className="h-6 w-32 bg-white/10 rounded-full mx-auto" />
+              <div className="h-12 w-96 bg-white/10 rounded mx-auto" />
+              <div className="h-6 w-64 bg-white/10 rounded mx-auto" />
+            </div>
+            <div className="h-[500px] bg-white/5 rounded-2xl" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="bg-zinc-900/50 rounded-xl overflow-hidden">
+                  <div className="h-48 bg-white/5" />
+                  <div className="p-5 space-y-3">
+                    <div className="h-5 w-3/4 bg-white/10 rounded" />
+                    <div className="h-4 w-full bg-white/5 rounded" />
+                    <div className="h-4 w-1/2 bg-white/5 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

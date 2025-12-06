@@ -1,40 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-
-import { getCaseStudies } from '../services/api';
-import { CaseStudy } from '../types';
+import { useCaseStudies } from '@/hooks/useData';
+import { CaseStudyGridSkeleton } from './ui/CaseStudySkeleton';
 
 export const CaseStudiesPage = () => {
-  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        // Simulate async API call
-        const data = await getCaseStudies();
-        setCaseStudies(data);
-      } catch (error) {
-        console.error("Error loading case studies", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen pt-32 pb-24 bg-[#050508] flex items-center justify-center">
-         <div className="text-indigo-500 animate-pulse">Loading Case Studies...</div>
-      </div>
-    );
-  }
+  const { data: caseStudies = [], isLoading } = useCaseStudies();
 
   return (
     <div className="pt-32 pb-24 min-h-screen bg-[#050508]">
@@ -67,6 +40,9 @@ export const CaseStudiesPage = () => {
 
         {/* Case Studies Grid */}
         <section className="mb-32 relative z-10">
+           {isLoading ? (
+             <CaseStudyGridSkeleton count={6} />
+           ) : (
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {caseStudies.map((story, index) => (
                <motion.div 
@@ -129,8 +105,9 @@ export const CaseStudiesPage = () => {
                     </div>
                   </Link>
                </motion.div>
-             ))}
+              ))}
            </div>
+           )}
         </section>
 
         {/* Bottom CTA */}
