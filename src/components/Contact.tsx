@@ -91,8 +91,8 @@ export const Contact = () => {
                         </div>
                         <div>
                             <h3 className="text-white font-bold mb-1">Email</h3>
-                            <p className="text-zinc-400">hello@elevatedai.co</p>
-                            <p className="text-zinc-400">support@elevatedai.co</p>
+                            <p className="text-zinc-400">Korra@Elevatedai.co</p>
+                            <p className="text-zinc-400">Johnathan@Elevatedai.co</p>
                         </div>
                     </div>
 
@@ -101,9 +101,9 @@ export const Contact = () => {
                             <MapPin className="w-6 h-6 text-indigo-400" />
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-1">Headquarters</h3>
-                            <p className="text-zinc-400">123 Innovation Dr, Suite 400</p>
-                            <p className="text-zinc-400">San Francisco, CA 94105</p>
+                            <h3 className="text-white font-bold mb-1">Mailing Address</h3>
+                            <p className="text-zinc-400">P.O. Box 14762</p>
+                            <p className="text-zinc-400">Torrance, CA 90503</p>
                         </div>
                     </div>
 
@@ -113,7 +113,7 @@ export const Contact = () => {
                         </div>
                         <div>
                             <h3 className="text-white font-bold mb-1">Phone</h3>
-                            <p className="text-zinc-400">+1 (555) 123-4567</p>
+                            <p className="text-zinc-400">+1 (424) 484-3844</p>
                             <p className="text-zinc-500 text-xs mt-1">Mon-Fri, 9am-5pm PST</p>
                         </div>
                     </div>
