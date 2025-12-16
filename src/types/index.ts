@@ -38,6 +38,7 @@ export interface DownloadableItem {
   type: string; // PDF, DOCX, etc.
   isPremium?: boolean;
   comingSoon?: boolean;
+  downloadUrl?: string;
 }
 
 export interface BlogPost {

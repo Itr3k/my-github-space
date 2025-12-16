@@ -39,7 +39,15 @@ const getRealLibraryItems = async (): Promise<LibraryItem[]> => {
 const getRealDownloadableItems = async (): Promise<DownloadableItem[]> => {
   const { data, error } = await supabase.from('downloadable_items').select('*');
   if (error) throw error;
-  return data as unknown as DownloadableItem[];
+  return (data || []).map(item => ({
+    title: item.title,
+    description: item.description,
+    size: item.size,
+    type: item.type,
+    isPremium: item.is_premium || false,
+    comingSoon: item.coming_soon || false,
+    downloadUrl: item.download_url || undefined
+  }));
 };
 
 const getRealLatestPosts = async (): Promise<BlogPost[]> => {

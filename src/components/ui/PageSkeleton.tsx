@@ -1,27 +1,18 @@
-import { Skeleton } from "./skeleton";
+import { motion } from 'motion/react';
 
 export const PageSkeleton = () => {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero skeleton */}
-      <div className="pt-32 pb-20 px-6">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <Skeleton className="h-12 w-3/4 mx-auto" />
-          <Skeleton className="h-6 w-1/2 mx-auto" />
-          <div className="flex justify-center gap-4 pt-4">
-            <Skeleton className="h-12 w-32" />
-            <Skeleton className="h-12 w-32" />
-          </div>
-        </div>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15 }}
+      className="min-h-screen bg-background flex items-center justify-center"
+    >
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-8 h-8 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+        <span className="text-zinc-500 text-sm">Loading...</span>
       </div>
-      {/* Content skeleton */}
-      <div className="max-w-6xl mx-auto px-6 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-64 rounded-xl" />
-          ))}
-        </div>
-      </div>
-    </div>
+    </motion.div>
   );
 };
