@@ -217,53 +217,53 @@ export const ResourcesPage = () => {
 
         {/* Downloadable Resources Section */}
         <section className="pt-12 border-t border-white/5">
-          <div className="flex items-center justify-between mb-12">
+          <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-3xl font-bold text-white mb-3">Downloadable Assets</h2>
               <p className="text-zinc-400">
-                Ready-to-use templates and PDF guides
+                Ready-to-use templates and PDF guides. These are sample deliverables showcasing our capabilities.
               </p>
-            </div>
-            <div className="hidden md:flex gap-2">
-               <button className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/5 transition-colors">
-                 <ArrowRight className="w-4 h-4 rotate-180" />
-               </button>
-               <button className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/5 transition-colors">
-                 <ArrowRight className="w-4 h-4" />
-               </button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {downloadableItems.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="group relative bg-[#0A0A0F] border border-white/5 rounded-xl p-6 hover:border-indigo-500/30 hover:bg-white/[0.02] transition-all"
-              >
-                <div className="absolute top-6 right-6">
-                   <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white transition-colors">
-                     <Download className="w-4 h-4 text-zinc-500 group-hover:text-white" />
-                   </div>
-                </div>
+            {downloadableItems.map((item, index) => {
+              const downloadUrl = item.downloadUrl;
+              return (
+                <motion.a
+                  key={index}
+                  href={downloadUrl || '#'}
+                  download={downloadUrl ? true : undefined}
+                  target={downloadUrl ? '_blank' : undefined}
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className={`group relative bg-[#0A0A0F] border border-white/5 rounded-xl p-6 hover:border-indigo-500/30 hover:bg-white/[0.02] transition-all ${!downloadUrl ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
+                >
+                  <div className="absolute top-6 right-6">
+                     <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white transition-colors">
+                       <Download className="w-4 h-4 text-zinc-500 group-hover:text-white" />
+                     </div>
+                  </div>
 
-                <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center mb-6">
-                   <File className="w-6 h-6 text-indigo-400" />
-                </div>
+                  <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center mb-6">
+                     <File className="w-6 h-6 text-indigo-400" />
+                  </div>
 
-                <h3 className="text-white font-bold mb-2 pr-8">{item.title}</h3>
-                <p className="text-zinc-500 text-xs mb-6 h-10 overflow-hidden">{item.description}</p>
+                  <h3 className="text-white font-bold mb-2 pr-8">{item.title}</h3>
+                  <p className="text-zinc-500 text-xs mb-6 h-10 overflow-hidden">{item.description}</p>
 
-                <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider text-zinc-600">
-                  <span className="bg-white/5 px-2 py-1 rounded border border-white/5">{item.type}</span>
-                  <span>{item.size}</span>
-                  {item.isPremium && <span className="text-amber-500">Premium</span>}
-                </div>
-              </motion.div>
-            ))}
+                  <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider text-zinc-600">
+                    <span className="bg-white/5 px-2 py-1 rounded border border-white/5">{item.type}</span>
+                    <span>{item.size}</span>
+                    {item.isPremium && <span className="text-amber-500">Premium</span>}
+                    {downloadUrl && <span className="text-emerald-500">Available</span>}
+                  </div>
+                </motion.a>
+              );
+            })}
           </div>
         </section>
         
