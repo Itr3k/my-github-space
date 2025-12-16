@@ -11,20 +11,21 @@ export const Hero = () => {
       
       {/* Background Image & Effects */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-         {/* Main Image */}
+         {/* Main Image - priority loading for LCP */}
          <ImageWithFallback 
             src="https://images.unsplash.com/photo-1694852860772-ec8598c72c15?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGRhcmslMjAzZCUyMGdlb21ldHJpYyUyMHRlY2hub2xvZ3klMjBtaW5pbWFsJTIwYmxhY2slMjBzb3BoaXN0aWNhdGVkfGVufDF8fHx8MTc2MzY2MDQxN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
             alt="Abstract Dark Background"
             className="w-full h-full object-cover opacity-40"
+            priority
          />
          
          {/* Dark Overlay for Text Readability */}
          <div className="absolute inset-0 bg-[#0A0A0F]/80 mix-blend-overlay" />
          <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0F] via-transparent to-[#0A0A0F]" />
 
-         {/* Aurora Glows */}
-         <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse" />
-         <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse" />
+         {/* Aurora Glows - reduced blur on mobile for performance */}
+         <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-indigo-600/10 rounded-full blur-[60px] md:blur-[120px] will-change-transform" />
+         <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-purple-600/10 rounded-full blur-[60px] md:blur-[120px] will-change-transform" />
       </div>
 
       <div className="relative z-20 max-w-5xl mx-auto px-6 w-full text-center">
