@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BrainCircuit, AudioWaveform, Network, ArrowRight, Check, ChevronRight, Sparkles } from 'lucide-react';
+import { BrainCircuit, AudioWaveform, Network, ArrowRight, Check, ChevronRight, Sparkles, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
@@ -43,6 +43,19 @@ const SERVICES = [
     ],
     gradient: "from-emerald-500/20 to-teal-500/20",
     image: "https://images.unsplash.com/photo-1760274479255-b8bf81991ef2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGRpZ2l0YWwlMjBmbG93JTIwY29ubmVjdGlvbiUyMGxpbmVzJTIwZGFyayUyMHRlY2hub2xvZ3l8ZW58MXx8fHwxNzYzNjYwNzU2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+  },
+  {
+    icon: Shield,
+    title: "AI Governance",
+    description: "Comprehensive frameworks for responsible AI deployment, risk management, and regulatory compliance.",
+    features: [
+      "Policy frameworks",
+      "Risk assessment",
+      "Compliance audits",
+      "Ethical AI guidelines"
+    ],
+    gradient: "from-amber-500/20 to-orange-500/20",
+    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGNvbXBsaWFuY2UlMjBkb2N1bWVudHN8ZW58MXx8fHwxNzYzNzY2MzI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
   }
 ];
 
