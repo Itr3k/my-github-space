@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
@@ -10,6 +11,22 @@ export const CaseStudiesPage = () => {
   const { data: caseStudies = [], isLoading } = useCaseStudies();
 
   return (
+    <>
+      <Helmet>
+        <title>AI Case Studies | Enterprise AI Success Stories | Elevated AI</title>
+        <meta name="description" content="See how leading organizations like JPMorgan, UPS, and Walmart achieved measurable ROI with AI transformation. Real case studies from enterprise AI implementations." />
+        <meta name="keywords" content="AI case studies, AI success stories, enterprise AI ROI, AI transformation results, AI implementation examples" />
+        <link rel="canonical" href="https://elevatedai.co/case-studies" />
+        
+        <meta property="og:title" content="AI Case Studies | Elevated AI" />
+        <meta property="og:description" content="See how leading organizations achieved measurable ROI with AI transformation." />
+        <meta property="og:url" content="https://elevatedai.co/case-studies" />
+        <meta property="og:type" content="website" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Case Studies | Elevated AI" />
+        <meta name="twitter:description" content="Real AI success stories from enterprise implementations." />
+      </Helmet>
     <div className="pt-32 pb-24 min-h-screen bg-[#050508]">
       <div className="max-w-7xl mx-auto px-6">
         
@@ -134,5 +151,6 @@ export const CaseStudiesPage = () => {
 
       </div>
     </div>
+    </>
   );
 };

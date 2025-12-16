@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { 
@@ -46,6 +47,22 @@ const INDUSTRIES = [
 
 export const Solutions = () => {
   return (
+    <>
+      <Helmet>
+        <title>AI Solutions | Enterprise AI Transformation & Automation | Elevated AI</title>
+        <meta name="description" content="Comprehensive AI solutions for enterprise transformation, voice AI, governance, and automation. Industry-leading AI consulting for financial services, healthcare, retail, and manufacturing." />
+        <meta name="keywords" content="AI solutions, enterprise AI, AI transformation services, AI automation services, AI consulting firm, AI for financial services, AI for healthcare, AI for manufacturing" />
+        <link rel="canonical" href="https://elevatedai.co/solutions" />
+        
+        <meta property="og:title" content="AI Solutions | Elevated AI" />
+        <meta property="og:description" content="Comprehensive AI solutions for enterprise transformation, voice AI, governance, and automation." />
+        <meta property="og:url" content="https://elevatedai.co/solutions" />
+        <meta property="og:type" content="website" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Solutions | Elevated AI" />
+        <meta name="twitter:description" content="Comprehensive AI solutions for enterprise transformation and automation." />
+      </Helmet>
     <div className="pt-32 pb-24">
       
       {/* Hero Section */}
@@ -291,5 +308,6 @@ export const Solutions = () => {
       </section>
 
     </div>
+    </>
   );
 };

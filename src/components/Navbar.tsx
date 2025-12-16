@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
-import { motion, useScroll, useMotionValueEvent } from 'motion/react';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'motion/react';
+import { Menu, X, ArrowRight, ChevronDown } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/8320e13332163660193ffca7e227562749e71202.png';
+
+const SERVICES = [
+  { name: 'AI Transformation', path: '/ai-transformation', description: 'Strategic AI implementation' },
+  { name: 'AI Governance', path: '/ai-governance', description: 'Risk & compliance frameworks' },
+  { name: 'Voice AI', path: '/voice-ai', description: 'AI phone agents & voice automation' },
+  { name: 'AI Automation', path: '/ai-automation', description: 'Workflow & process automation' },
+];
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const servicesRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   const location = useLocation();
   const navigate = useNavigate();
@@ -14,6 +23,17 @@ export const Navbar = () => {
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 50);
   });
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (servicesRef.current && !servicesRef.current.contains(event.target as Node)) {
+        setIsServicesOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleNavigation = (item: string) => {
     if (item === 'Solutions') {
@@ -40,13 +60,11 @@ export const Navbar = () => {
 
     if (location.pathname !== '/') {
       navigate('/');
-      // Optional: timeout to scroll after navigation
       setTimeout(() => {
         const element = document.getElementById(hash.replace('#', ''));
         if (element) element.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     } else {
-      // Just scroll if already on home
       const element = document.getElementById(hash.replace('#', ''));
         if (element) element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -71,7 +89,52 @@ export const Navbar = () => {
 
           {/* Desktop Links */}
           <div className={`hidden md:flex items-center gap-1 p-1 rounded-full ${isScrolled ? 'bg-white/5 border border-white/5' : ''}`}>
-            {["Solutions", "Blog", "Case Studies", "Resources"].map((item) => (
+            {/* Services Dropdown */}
+            <div ref={servicesRef} className="relative">
+              <button 
+                onClick={() => setIsServicesOpen(!isServicesOpen)}
+                className="flex items-center gap-1 px-4 py-1.5 text-zinc-400 hover:text-white text-sm font-medium transition-all hover:bg-white/10 rounded-full bg-transparent border-none cursor-pointer"
+              >
+                Services
+                <ChevronDown className={`w-3 h-3 transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              <AnimatePresence>
+                {isServicesOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full left-0 mt-2 w-64 bg-[#0A0A0F] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50"
+                  >
+                    {SERVICES.map((service) => (
+                      <Link
+                        key={service.path}
+                        to={service.path}
+                        onClick={() => setIsServicesOpen(false)}
+                        className="block px-4 py-3 hover:bg-white/5 transition-colors"
+                      >
+                        <div className="text-white text-sm font-medium">{service.name}</div>
+                        <div className="text-zinc-500 text-xs">{service.description}</div>
+                      </Link>
+                    ))}
+                    <div className="border-t border-white/10">
+                      <Link
+                        to="/solutions"
+                        onClick={() => setIsServicesOpen(false)}
+                        className="flex items-center gap-2 px-4 py-3 text-indigo-400 text-sm font-medium hover:bg-white/5 transition-colors"
+                      >
+                        View All Solutions
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            
+            {["Blog", "Case Studies", "Resources"].map((item) => (
               <button 
                 key={item} 
                 onClick={() => handleNavigation(item)}
@@ -102,18 +165,36 @@ export const Navbar = () => {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="absolute top-full left-0 right-0 p-4 bg-[#0A0A0F] border-b border-white/10 shadow-2xl">
-             {["Solutions", "Blog", "Case Studies", "Resources"].map((item) => (
-               <button 
-                 key={item}
-                 onClick={() => {
-                   handleNavigation(item);
-                   setIsMobileMenuOpen(false);
-                 }}
-                 className="w-full text-left block px-4 py-3 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white font-medium transition-colors"
-               >
-                 {item}
-               </button>
-             ))}
+             {/* Mobile Services Section */}
+             <div className="mb-2">
+               <div className="px-4 py-2 text-xs font-bold text-zinc-500 uppercase tracking-wider">Services</div>
+               {SERVICES.map((service) => (
+                 <Link
+                   key={service.path}
+                   to={service.path}
+                   onClick={() => setIsMobileMenuOpen(false)}
+                   className="block px-4 py-3 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white font-medium transition-colors"
+                 >
+                   {service.name}
+                 </Link>
+               ))}
+             </div>
+             
+             <div className="border-t border-white/10 pt-2">
+               {["Solutions", "Blog", "Case Studies", "Resources"].map((item) => (
+                 <button 
+                   key={item}
+                   onClick={() => {
+                     handleNavigation(item);
+                     setIsMobileMenuOpen(false);
+                   }}
+                   className="w-full text-left block px-4 py-3 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white font-medium transition-colors"
+                 >
+                   {item}
+                 </button>
+               ))}
+             </div>
+             
              <div className="pt-2 border-t border-white/10 mt-2">
                 <Link to="/start" className="w-full block text-center px-5 py-3 rounded-xl bg-white text-black text-sm font-medium mt-2" onClick={() => setIsMobileMenuOpen(false)}>
                   Get Started
