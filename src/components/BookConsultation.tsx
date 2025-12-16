@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { Mail, Phone, MapPin, Send, Twitter, Linkedin, Github, Youtube } from 'lucide-react';
 import { useForm } from "react-hook-form";
@@ -58,6 +59,22 @@ export const BookConsultation = () => {
   };
 
   return (
+    <>
+      <Helmet>
+        <title>Book AI Consultation | Free Strategy Session | Elevated AI</title>
+        <meta name="description" content="Schedule a free AI consultation with Elevated AI. Discuss your AI transformation, automation, or governance needs with our expert consultants." />
+        <meta name="keywords" content="AI consultation, AI strategy session, book AI consulting, enterprise AI consultation, AI transformation consultation" />
+        <link rel="canonical" href="https://elevatedai.co/book-consultation" />
+        
+        <meta property="og:title" content="Book AI Consultation | Elevated AI" />
+        <meta property="og:description" content="Schedule a free AI consultation to discuss your transformation needs." />
+        <meta property="og:url" content="https://elevatedai.co/book-consultation" />
+        <meta property="og:type" content="website" />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Book AI Consultation | Elevated AI" />
+        <meta name="twitter:description" content="Schedule a free AI strategy session with our consultants." />
+      </Helmet>
     <div className="pt-32 pb-24 px-6 min-h-screen">
       <div className="max-w-7xl mx-auto">
         
@@ -316,5 +333,6 @@ export const BookConsultation = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { Calendar, Eye, ArrowRight, ChevronDown, Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
@@ -138,7 +139,40 @@ export const Blog = () => {
     );
   }
 
+  const blogSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Elevated AI Insights",
+    "description": "Latest articles on AI consulting, enterprise automation, and workplace transformation from Elevated AI.",
+    "url": "https://elevatedai.co/blog",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Elevated AI",
+      "url": "https://elevatedai.co"
+    }
+  };
+
   return (
+    <>
+      <Helmet>
+        <title>AI Insights & Resources | Elevated AI Blog</title>
+        <meta name="description" content="Expert insights on AI transformation, enterprise automation, voice AI, and governance. Stay ahead with the latest AI consulting trends and strategies." />
+        <meta name="keywords" content="AI blog, AI consulting insights, enterprise AI, AI transformation, AI automation, voice AI, AI governance best practices" />
+        <link rel="canonical" href="https://elevatedai.co/blog" />
+        
+        <meta property="og:title" content="AI Insights & Resources | Elevated AI Blog" />
+        <meta property="og:description" content="Expert insights on AI transformation, enterprise automation, and governance strategies." />
+        <meta property="og:url" content="https://elevatedai.co/blog" />
+        <meta property="og:type" content="blog" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Insights & Resources | Elevated AI" />
+        <meta name="twitter:description" content="Expert insights on AI transformation, enterprise automation, and governance strategies." />
+        
+        <script type="application/ld+json">
+          {JSON.stringify(blogSchema)}
+        </script>
+      </Helmet>
     <div className="pt-32 pb-24 min-h-screen bg-[#050508]">
       <div className="max-w-7xl mx-auto px-6">
         
@@ -418,5 +452,6 @@ export const Blog = () => {
 
       </div>
     </div>
+    </>
   );
 };

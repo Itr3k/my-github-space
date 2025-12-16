@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { 
   Zap, 
@@ -92,6 +93,22 @@ export const ResourcesPage = () => {
   }
 
   return (
+    <>
+      <Helmet>
+        <title>AI Resources & Documentation | Elevated AI</title>
+        <meta name="description" content="Explore our library of AI white papers, interactive workflows, and educational materials. Download AI governance frameworks, transformation guides, and implementation templates." />
+        <meta name="keywords" content="AI resources, AI documentation, AI white papers, AI governance framework, AI transformation guide, enterprise AI templates" />
+        <link rel="canonical" href="https://elevatedai.co/resources" />
+        
+        <meta property="og:title" content="AI Resources & Documentation | Elevated AI" />
+        <meta property="og:description" content="Download AI governance frameworks, transformation guides, and implementation templates." />
+        <meta property="og:url" content="https://elevatedai.co/resources" />
+        <meta property="og:type" content="website" />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="AI Resources | Elevated AI" />
+        <meta name="twitter:description" content="Download AI governance frameworks and transformation guides." />
+      </Helmet>
     <div className="min-h-screen pt-32 pb-24 px-6 bg-[#050508]">
       <div className="max-w-7xl mx-auto space-y-24">
         
@@ -355,5 +372,6 @@ export const ResourcesPage = () => {
 
       </div>
     </div>
+    </>
   );
 };

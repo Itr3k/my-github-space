@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { useForm } from "react-hook-form";
@@ -54,6 +55,22 @@ export const Contact = () => {
   };
 
   return (
+    <>
+      <Helmet>
+        <title>Contact Elevated AI | Get in Touch for AI Consulting</title>
+        <meta name="description" content="Contact Elevated AI for enterprise AI consulting, transformation services, and automation solutions. Reach out to start your AI journey today." />
+        <meta name="keywords" content="Contact Elevated AI, AI consulting contact, enterprise AI services, AI transformation inquiry" />
+        <link rel="canonical" href="https://elevatedai.co/contact" />
+        
+        <meta property="og:title" content="Contact Elevated AI" />
+        <meta property="og:description" content="Get in touch for enterprise AI consulting and transformation services." />
+        <meta property="og:url" content="https://elevatedai.co/contact" />
+        <meta property="og:type" content="website" />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Contact Elevated AI" />
+        <meta name="twitter:description" content="Get in touch for enterprise AI consulting and transformation services." />
+      </Helmet>
     <div className="pt-32 pb-24 min-h-screen">
       <div className="max-w-4xl mx-auto px-6">
         <motion.div
@@ -173,5 +190,6 @@ export const Contact = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
