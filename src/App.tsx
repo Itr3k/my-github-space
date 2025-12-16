@@ -90,19 +90,26 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div ref={containerRef} className="relative min-h-dvh bg-[#050508] text-white overflow-x-hidden font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
       
-      {/* Grid Pattern Overlay - optimized with will-change */}
-      <div className="fixed inset-0 z-0 pointer-events-none bg-[url('data:image/svg+xml,%3Csvg viewBox=%270 0 200 200%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cfilter id=%27noiseFilter%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.65%27 numOctaves=%273%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noiseFilter)%27/%3E%3C/svg%3E')] opacity-20 brightness-100 contrast-150"></div>
+      {/* Grid Pattern Overlay - optimized with contain for performance */}
+      <div 
+        className="fixed inset-0 z-0 pointer-events-none opacity-20 brightness-100 contrast-150"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          contain: 'strict'
+        }}
+      />
       <div 
         className="fixed inset-0 z-0 pointer-events-none opacity-[0.15]"
         style={{
           backgroundImage: `linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)`,
           backgroundSize: '40px 40px',
-          maskImage: 'radial-gradient(circle at 50% 50%, black, transparent 80%)'
+          maskImage: 'radial-gradient(circle at 50% 50%, black, transparent 80%)',
+          contain: 'strict'
         }}
       />
       
-      {/* Ambient Background Glow - reduced blur on mobile for performance */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] md:w-[1000px] h-[400px] md:h-[600px] bg-indigo-600/10 rounded-full blur-[60px] md:blur-[120px] pointer-events-none z-0 will-change-transform" />
+      {/* Ambient Background Glow - GPU accelerated */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] md:w-[1000px] h-[400px] md:h-[600px] bg-indigo-600/10 rounded-full blur-[60px] md:blur-[120px] pointer-events-none z-0 transform-gpu" />
 
       <Navbar />
       

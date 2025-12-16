@@ -3,15 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Elevated AI</title>
+    <title>Elevated AI | Enterprise AI Consulting & Transformation</title>
     <meta name="description" content="Elevated AI builds advanced automation, voice agents, and AI strategy solutions that help businesses scale faster with enterprise-grade execution.">
     <meta name="author" content="Elevated AI" />
 
-    <!-- Performance: Preconnect to external origins -->
+    <!-- Performance: DNS Prefetch & Preconnect to external origins -->
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://cqvpzkvrsdxytdohmenq.supabase.co" />
+    <link rel="dns-prefetch" href="https://storage.googleapis.com" />
+    
+    <!-- LCP Optimization: Preload hero image -->
+    <link 
+      rel="preload" 
+      as="image" 
+      href="https://images.unsplash.com/photo-1694852860772-ec8598c72c15?crop=entropy&cs=tinysrgb&fit=max&fm=webp&w=1080&q=75" 
+      fetchpriority="high"
+    />
+    
+    <!-- Font preload for LCP text -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+    </noscript>
     
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/s8GWXBBgwRTn19rUpZqaPbG4pUa2/social-images/social-1763874392360-BW_EA_logo_building.png">
@@ -25,13 +41,52 @@
     <meta name="twitter:description" content="Elevated AI builds advanced automation, voice agents, and AI strategy solutions that help businesses scale faster with enterprise-grade execution.">
     <link rel="icon" type="image/x-icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/s8GWXBBgwRTn19rUpZqaPbG4pUa2/uploads/1763874354442-EAi Icon.png">
 
-    <!-- Reduced motion preference for accessibility -->
+    <!-- Critical CSS for above-the-fold content (CLS & LCP) -->
     <style>
+      /* Prevent FOUT - Font display swap */
+      @font-face {
+        font-family: 'Inter';
+        font-display: swap;
+      }
+      
+      /* Critical layout styles to prevent CLS */
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #050508;
+        color: white;
+        min-height: 100vh;
+      }
+      
+      #root {
+        min-height: 100vh;
+        background-color: #050508;
+      }
+      
+      /* Reserve space for navbar to prevent CLS */
+      .navbar-placeholder {
+        height: 80px;
+      }
+      
+      /* Hero section aspect ratio hint */
+      .hero-section {
+        min-height: 100vh;
+        contain: layout style;
+      }
+      
+      /* Image container CLS prevention */
+      .img-container {
+        aspect-ratio: 16/9;
+        background-color: #0a0a0f;
+      }
+      
+      /* Reduce motion for accessibility */
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after {
           animation-duration: 0.01ms !important;
           animation-iteration-count: 1 !important;
           transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
         }
       }
     </style>
