@@ -278,13 +278,29 @@ serve(async (req) => {
   }
 
   try {
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    
+    // Validate API key - only allow internal/service calls
+    const authHeader = req.headers.get('Authorization');
+    const internalKey = req.headers.get('X-Internal-Key');
+    const isAuthorized = 
+      authHeader === `Bearer ${supabaseServiceKey}` || 
+      internalKey === supabaseServiceKey;
+    
+    if (!isAuthorized) {
+      console.log('Unauthorized access attempt to generate-blog-post');
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
     if (!lovableApiKey) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Parse request body for optional custom topic/category
