@@ -1,4 +1,4 @@
-import { Cpu, Network, MessageSquareText, FileText, Scan, Wrench } from 'lucide-react';
+import { Cpu, Network, MessageSquareText, FileText, Scan, Wrench, Shield } from 'lucide-react';
 
 export const SOLUTIONS = [
   {
@@ -120,5 +120,25 @@ export const SOLUTIONS = [
       "Seamless integration with legacy systems"
     ],
     image: "https://images.unsplash.com/photo-1759661881353-5b9cc55e1cf4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2RlJTIwcHJvZ3JhbW1pbmclMjBhYnN0cmFjdCUyMGJsdWV8ZW58MXx8fHwxNzYzNzY2MzI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+  },
+  {
+    id: "ai-governance",
+    icon: Shield,
+    title: "AI Governance",
+    description: "Comprehensive frameworks for responsible AI deployment, risk management, and regulatory compliance for any organization.",
+    longDescription: "As AI becomes central to business operations, governance is critical. We help organizations of all sizes and industries establish robust AI governance frameworks that ensure ethical deployment, regulatory compliance, and stakeholder trust. Our approach is fully customizable to your industry's unique requirements and risk profile.",
+    features: [
+      "Policy & framework development",
+      "Risk assessment & mitigation",
+      "Compliance audits & documentation",
+      "Ethical AI guidelines & training"
+    ],
+    benefits: [
+      "Regulatory compliance across jurisdictions",
+      "Reduced liability and risk exposure",
+      "Stakeholder and board-level confidence",
+      "Audit-ready documentation and processes"
+    ],
+    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGNvbXBsaWFuY2UlMjBkb2N1bWVudHN8ZW58MXx8fHwxNzYzNzY2MzI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
   }
 ];
