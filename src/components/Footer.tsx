@@ -93,8 +93,9 @@ export const Footer = () => {
           <div>
              <h3 className="text-white font-bold mb-6 text-sm">Quick Links</h3>
              <ul className="space-y-3 text-sm text-zinc-500">
-               <li><Link to="/solutions" className="hover:text-white transition-colors">Solutions</Link></li>
-               <li><Link to="/ai-governance" className="hover:text-white transition-colors">AI Governance</Link></li>
+                <li><Link to="/solutions" className="hover:text-white transition-colors">Solutions</Link></li>
+                <li><Link to="/ai-governance" className="hover:text-white transition-colors">AI Governance</Link></li>
+                <li><Link to="/ai-transformation" className="hover:text-white transition-colors">AI Transformation</Link></li>
                <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
                <li><Link to="/case-studies" className="hover:text-white transition-colors">Case Studies</Link></li>
                <li><Link to="/resources" className="hover:text-white transition-colors">Resources</Link></li>

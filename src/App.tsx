@@ -24,6 +24,7 @@ const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy').then(m => 
 const TermsOfService = lazy(() => import('./components/TermsOfService').then(m => ({ default: m.TermsOfService })));
 const ChecklistLandingPage = lazy(() => import('./components/ChecklistLandingPage').then(m => ({ default: m.ChecklistLandingPage })));
 const AIGovernancePage = lazy(() => import('./components/AIGovernancePage').then(m => ({ default: m.AIGovernancePage })));
+const AITransformationPage = lazy(() => import('./components/AITransformationPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -136,6 +137,7 @@ const App = () => {
                 <Route path="/terms" element={<TermsOfService />} />
                 <Route path="/checklist" element={<ChecklistLandingPage />} />
                 <Route path="/ai-governance" element={<AIGovernancePage />} />
+                <Route path="/ai-transformation" element={<AITransformationPage />} />
                 <Route path="*" element={<Home />} />
               </Routes>
             </Suspense>
