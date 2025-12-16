@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Home } from './components/Home';
@@ -22,6 +23,7 @@ const ProjectWizard = lazy(() => import('./components/ProjectWizard').then(m => 
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
 const TermsOfService = lazy(() => import('./components/TermsOfService').then(m => ({ default: m.TermsOfService })));
 const ChecklistLandingPage = lazy(() => import('./components/ChecklistLandingPage').then(m => ({ default: m.ChecklistLandingPage })));
+const AIGovernancePage = lazy(() => import('./components/AIGovernancePage').then(m => ({ default: m.AIGovernancePage })));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -112,33 +114,36 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Layout>
-          <Suspense fallback={<PageSkeleton />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/book-consultation" element={<BookConsultation />} />
-              <Route path="/solutions" element={<Solutions />} />
-              <Route path="/solutions/:id" element={<SolutionDetail />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:id" element={<BlogPostDetail />} />
-              <Route path="/case-studies" element={<CaseStudiesPage />} />
-              <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
-              <Route path="/resources" element={<ResourcesPage />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/start" element={<ProjectWizard />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              <Route path="/checklist" element={<ChecklistLandingPage />} />
-              <Route path="*" element={<Home />} />
-            </Routes>
-          </Suspense>
-        </Layout>
-        <Toaster />
-      </Router>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Layout>
+            <Suspense fallback={<PageSkeleton />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/book-consultation" element={<BookConsultation />} />
+                <Route path="/solutions" element={<Solutions />} />
+                <Route path="/solutions/:id" element={<SolutionDetail />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:id" element={<BlogPostDetail />} />
+                <Route path="/case-studies" element={<CaseStudiesPage />} />
+                <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
+                <Route path="/resources" element={<ResourcesPage />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/start" element={<ProjectWizard />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/checklist" element={<ChecklistLandingPage />} />
+                <Route path="/ai-governance" element={<AIGovernancePage />} />
+                <Route path="*" element={<Home />} />
+              </Routes>
+            </Suspense>
+          </Layout>
+          <Toaster />
+        </Router>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 
