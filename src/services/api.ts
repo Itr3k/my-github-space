@@ -65,6 +65,7 @@ const getRealLatestPosts = async (): Promise<BlogPost[]> => {
   // Map database fields to BlogPost interface
   return (data || []).map(post => ({
     id: post.id,
+    slug: post.slug,
     title: post.title,
     excerpt: post.excerpt,
     category: post.category,
@@ -96,6 +97,39 @@ const getRealBlogPostById = async (id: string | number): Promise<BlogPost | unde
   
   return {
     id: data.id,
+    slug: data.slug,
+    title: data.title,
+    excerpt: data.excerpt,
+    category: data.category,
+    readTime: data.read_time,
+    image: data.image,
+    content: data.content,
+    date: data.date,
+    views: data.views?.toString(),
+    author: {
+      name: data.author_name || 'Elevated AI Team',
+      role: data.author_role || 'AI Consulting Experts',
+      image: data.author_image || '/placeholder.svg'
+    },
+    color: data.color,
+    bg: data.bg,
+    border: data.border,
+    tags: data.tags || []
+  };
+};
+
+const getRealBlogPostBySlug = async (slug: string): Promise<BlogPost | undefined> => {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .maybeSingle();
+  
+  if (error || !data) return undefined;
+  
+  return {
+    id: data.id,
+    slug: data.slug,
     title: data.title,
     excerpt: data.excerpt,
     category: data.category,
@@ -146,6 +180,11 @@ export const getLatestPosts = async (): Promise<BlogPost[]> => {
 export const getBlogPostById = async (id: string | number): Promise<BlogPost | undefined> => {
   if (USE_MOCK_DATA) return getMockBlogPostById(id);
   return getRealBlogPostById(id);
+};
+
+export const getBlogPostBySlug = async (slug: string): Promise<BlogPost | undefined> => {
+  if (USE_MOCK_DATA) return LATEST_POSTS.find(post => post.slug === slug);
+  return getRealBlogPostBySlug(slug);
 };
 
 // Categories are static app config

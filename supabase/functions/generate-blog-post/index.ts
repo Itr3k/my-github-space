@@ -383,11 +383,26 @@ serve(async (req) => {
       day: 'numeric' 
     });
 
+    // Generate slug from title using database function
+    console.log("Generating slug for title:", blogContent.title);
+    const { data: slugData, error: slugError } = await supabase.rpc('generate_slug', { 
+      title: blogContent.title 
+    });
+    
+    if (slugError) {
+      console.error("Slug generation error:", slugError);
+      throw new Error(`Failed to generate slug: ${slugError.message}`);
+    }
+    
+    const slug = slugData as string;
+    console.log("Generated slug:", slug);
+
     // Insert blog post into database
     const { data: post, error: insertError } = await supabase
       .from('blog_posts')
       .insert({
         title: blogContent.title,
+        slug: slug,
         excerpt: blogContent.excerpt,
         category: category,
         read_time: blogContent.readTime,
@@ -414,7 +429,7 @@ serve(async (req) => {
       throw new Error(`Failed to save blog post: ${insertError.message}`);
     }
 
-    console.log("Blog post created successfully:", post.id);
+    console.log("Blog post created successfully:", post.id, "slug:", post.slug);
 
     // Trigger Editor Agent for quality control review
     let editorReview = null;
@@ -455,6 +470,7 @@ serve(async (req) => {
           : "Blog post generated and sent for review",
         post: {
           id: post.id,
+          slug: post.slug,
           title: post.title,
           category: post.category,
           image: post.image

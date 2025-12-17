@@ -207,7 +207,7 @@ export const Blog = () => {
             className="mb-16"
           >
             <Link 
-              to={`/blog/${featuredPost.id}`}
+              to={`/blog/${featuredPost.slug || featuredPost.id}`}
               className="group block relative rounded-2xl overflow-hidden"
             >
               {/* Background Image */}
@@ -332,7 +332,7 @@ export const Blog = () => {
               transition={{ delay: i * 0.05 }}
             >
               <Link 
-                to={`/blog/${post.id}`}
+                to={`/blog/${post.slug || post.id}`}
                 className="group flex flex-col h-full bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-all duration-300"
               >
                 {/* Image Container */}

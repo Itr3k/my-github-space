@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getCaseStudies, getCaseStudyById, getLatestPosts, getBlogPostById } from '@/services/api';
+import { getCaseStudies, getCaseStudyById, getLatestPosts, getBlogPostById, getBlogPostBySlug } from '@/services/api';
 
 // Case Studies
 export const useCaseStudies = () => {
@@ -50,6 +50,22 @@ export const useBlogPost = (id: string | number | undefined) => {
     initialData: () => {
       const cachedPosts = queryClient.getQueryData<Awaited<ReturnType<typeof getLatestPosts>>>(['blog-posts']);
       return cachedPosts?.find(post => String(post.id) === String(id));
+    },
+  });
+};
+
+export const useBlogPostBySlug = (slug: string | undefined) => {
+  const queryClient = useQueryClient();
+  
+  return useQuery({
+    queryKey: ['blog-post-slug', slug],
+    queryFn: () => getBlogPostBySlug(slug!),
+    enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    initialData: () => {
+      const cachedPosts = queryClient.getQueryData<Awaited<ReturnType<typeof getLatestPosts>>>(['blog-posts']);
+      return cachedPosts?.find(post => post.slug === slug);
     },
   });
 };
