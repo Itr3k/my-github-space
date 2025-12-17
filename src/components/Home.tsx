@@ -29,7 +29,7 @@ export const Home = () => {
     ],
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+1-555-123-4567",
+      "telephone": "+1-424-484-3844",
       "contactType": "sales",
       "areaServed": "US",
       "availableLanguage": "English"

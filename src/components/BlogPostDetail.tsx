@@ -236,7 +236,7 @@ export const BlogPostDetail = () => {
                   Book a free consultation with our Los Angeles-based AI experts and discover how AI can drive growth for your organization.
                 </p>
                 <Link 
-                  to="/book" 
+                  to="/book-consultation" 
                   className="block w-full py-3 px-4 bg-indigo-600 text-white text-center rounded-lg font-medium hover:bg-indigo-500 transition-colors text-sm"
                 >
                   Book Free Consultation
