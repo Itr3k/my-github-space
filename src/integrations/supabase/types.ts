@@ -83,6 +83,7 @@ export type Database = {
           meta_keywords: string | null
           read_time: string
           scheduled_for: string | null
+          slug: string | null
           status: string | null
           tags: string[] | null
           title: string
@@ -106,6 +107,7 @@ export type Database = {
           meta_keywords?: string | null
           read_time: string
           scheduled_for?: string | null
+          slug?: string | null
           status?: string | null
           tags?: string[] | null
           title: string
@@ -129,6 +131,7 @@ export type Database = {
           meta_keywords?: string | null
           read_time?: string
           scheduled_for?: string | null
+          slug?: string | null
           status?: string | null
           tags?: string[] | null
           title?: string
@@ -418,7 +421,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_slug: { Args: { title: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
