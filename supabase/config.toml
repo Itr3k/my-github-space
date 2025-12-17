@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.batch-review-posts]
 verify_jwt = false
+
+[functions.batch-generate-posts]
+verify_jwt = false
