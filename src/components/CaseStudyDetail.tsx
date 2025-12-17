@@ -115,12 +115,15 @@ export const CaseStudyDetail = () => {
                     ))}
                  </div>
 
-                 <div className="mt-10 pt-6 border-t border-white/10">
-                    <button className="w-full py-4 bg-white text-black rounded-xl font-bold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2">
-                      Start Transformation
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                 </div>
+                  <div className="mt-10 pt-6 border-t border-white/10">
+                     <Link 
+                       to="/book-consultation" 
+                       className="w-full py-4 bg-white text-black rounded-xl font-bold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2"
+                     >
+                       Start Transformation
+                       <ArrowRight className="w-4 h-4" />
+                     </Link>
+                  </div>
               </div>
            </div>
 

@@ -7,6 +7,7 @@ import { Footer } from './components/Footer';
 import { Home } from './components/Home';
 import { Toaster } from './components/ui/sonner';
 import { PageSkeleton } from './components/ui/PageSkeleton';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Lazy load all route components for code splitting
 const BookConsultation = lazy(() => import('./components/BookConsultation').then(m => ({ default: m.BookConsultation })));
@@ -128,8 +129,9 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <Router>
           <Layout>
-            <Suspense fallback={<PageSkeleton />}>
-              <Routes>
+            <ErrorBoundary>
+              <Suspense fallback={<PageSkeleton />}>
+                <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/book-consultation" element={<BookConsultation />} />
                 <Route path="/solutions" element={<Solutions />} />
@@ -150,8 +152,9 @@ const App = () => {
                 <Route path="/voice-ai" element={<VoiceAIPage />} />
                 <Route path="/ai-automation" element={<AIAutomationPage />} />
                 <Route path="*" element={<Home />} />
-              </Routes>
-            </Suspense>
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
           </Layout>
           <Toaster />
         </Router>
