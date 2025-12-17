@@ -190,69 +190,69 @@
     <priority>0.7</priority>
   </url>
   
-  <!-- Blog Post Pages (SEO-friendly slugs) -->
+  <!-- Blog Post Pages - Pre-rendered for AI Crawlers -->
   <url>
-    <loc>https://elevatedai.co/blog/preparing-your-business-for-the-ai-revolution-a-strategic-guide</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=preparing-your-business-for-the-ai-revolution-a-strategic-guide</loc>
     <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/blog/ai-security-best-practices-safeguarding-your-business-in-2024</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=ai-security-best-practices-safeguarding-your-business-in-2024</loc>
     <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/blog/building-an-ai-ready-workforce-training-strategies-that-work</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=building-an-ai-ready-workforce-training-strategies-that-work</loc>
     <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/blog/ai-roi-in-2025-case-studies-proving-business-value</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=ai-roi-in-2025-case-studies-proving-business-value</loc>
     <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/blog/ai-consulting-your-path-from-vision-to-ai-deployment-success</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=ai-consulting-your-path-from-vision-to-ai-deployment-success</loc>
     <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/blog/choosing-the-right-ai-tool-for-business-a-strategic-guide</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=choosing-the-right-ai-tool-for-business-a-strategic-guide</loc>
     <lastmod>2025-12-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/blog/avoid-ai-pitfalls-common-implementation-mistakes-solutions</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=avoid-ai-pitfalls-common-implementation-mistakes-solutions</loc>
     <lastmod>2025-12-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/blog/ai-market-trends-where-the-industry-is-heading</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=ai-market-trends-where-the-industry-is-heading</loc>
     <lastmod>2025-12-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/blog/prepare-your-organization-for-the-ai-revolution</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=prepare-your-organization-for-the-ai-revolution</loc>
     <lastmod>2025-12-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/blog/ai-decision-making-transforming-business-operations</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=ai-decision-making-transforming-business-operations</loc>
     <lastmod>2025-12-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/blog/top-ai-tools-released-this-month-a-business-review</loc>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=top-ai-tools-released-this-month-a-business-review</loc>
     <lastmod>2025-12-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
