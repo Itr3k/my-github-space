@@ -28,6 +28,7 @@ const AIGovernancePage = lazy(() => import('./components/AIGovernancePage').then
 const AITransformationPage = lazy(() => import('./components/AITransformationPage'));
 const VoiceAIPage = lazy(() => import('./components/VoiceAIPage'));
 const AIAutomationPage = lazy(() => import('./components/AIAutomationPage'));
+const NotFound = lazy(() => import('./components/NotFound'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -151,7 +152,7 @@ const App = () => {
                 <Route path="/ai-transformation" element={<AITransformationPage />} />
                 <Route path="/voice-ai" element={<VoiceAIPage />} />
                 <Route path="/ai-automation" element={<AIAutomationPage />} />
-                <Route path="*" element={<Home />} />
+                <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
             </ErrorBoundary>
