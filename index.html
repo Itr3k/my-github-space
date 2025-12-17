@@ -94,6 +94,30 @@
 
   <body>
     <div id="root"></div>
+    <script>
+      // Bot detection: Redirect AI crawlers to SSR versions for readable content
+      (function() {
+        var botPatterns = /GPTBot|ChatGPT|Claude|ClaudeBot|Anthropic|Googlebot|Bingbot|Slurp|DuckDuckBot|Baiduspider|YandexBot|facebookexternalhit|Twitterbot|LinkedInBot|Applebot/i;
+        var ua = navigator.userAgent || '';
+        var path = window.location.pathname;
+        
+        if (botPatterns.test(ua)) {
+          // Blog post redirect
+          var blogMatch = path.match(/^\/blog\/([^\/]+)$/);
+          if (blogMatch && blogMatch[1] !== '' && !blogMatch[1].match(/^\d+$/)) {
+            window.location.href = 'https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/blog-ssr?slug=' + encodeURIComponent(blogMatch[1]);
+            return;
+          }
+          
+          // Case study redirect
+          var caseMatch = path.match(/^\/case-studies\/([^\/]+)$/);
+          if (caseMatch && caseMatch[1] !== '') {
+            window.location.href = 'https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/case-study-ssr?id=' + encodeURIComponent(caseMatch[1]);
+            return;
+          }
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
