@@ -8,31 +8,38 @@ const corsHeaders = {
 
 const REPLACEMENT_TOPICS = [
   {
-    topic: "5 Enterprise AI Tools Transforming Business in 2026 - Include specific tools like Microsoft Copilot, Claude, Jasper, Synthesia, and Descript with their 2026 features, pricing, and enterprise use cases",
+    topic: "5 Enterprise AI Tools Transforming Business in 2026",
+    details: "Cover Microsoft Copilot, Claude, Jasper, Synthesia, and Descript with specific features, pricing, and enterprise use cases",
     category: "AI Tips"
   },
   {
-    topic: "AI Governance Checklist: Your 2026 Compliance Roadmap - Cover EU AI Act enforcement timeline, NIST AI RMF 2.0, ISO 42001 certification requirements, and specific compliance steps organizations need to take",
+    topic: "AI Governance Checklist: Your 2026 Compliance Roadmap",
+    details: "Cover EU AI Act enforcement timeline (2025-2026), NIST AI RMF 2.0, ISO 42001 certification requirements, and specific compliance steps",
     category: "AI Consulting"
   },
   {
-    topic: "Voice AI for Customer Service: A Complete 2026 Implementation Guide - Cover ElevenLabs, Amazon Lex, Google CCAI with specific features, integration steps, costs, and real-world implementation examples",
+    topic: "Voice AI for Customer Service: A Complete 2026 Implementation Guide",
+    details: "Cover ElevenLabs, Amazon Lex, Google CCAI with specific features, integration steps, costs, and real-world implementation examples",
     category: "AI Services"
   },
   {
-    topic: "How RAG Systems Are Revolutionizing Enterprise Knowledge Management in 2025 - Include technical architecture details, specific vector databases (Pinecone, Weaviate, Qdrant), embedding models, and real enterprise implementation examples",
+    topic: "How RAG Systems Are Revolutionizing Enterprise Knowledge Management in 2025",
+    details: "Cover technical architecture, vector databases (Pinecone, Weaviate, Qdrant), embedding models, and real enterprise implementation examples",
     category: "AI in the Workplace"
   },
   {
-    topic: "AI Cost Optimization: Reducing Your LLM Spending in 2026 - Include specific strategies like model selection (GPT-4 vs Claude vs open source), caching, prompt optimization, and real cost comparisons with actual pricing data",
+    topic: "AI Cost Optimization: Reducing Your LLM Spending in 2026",
+    details: "Cover model selection strategies (GPT-4 vs Claude vs open source), caching, prompt optimization, and real cost comparisons with actual pricing",
     category: "AI Thought Leadership"
   },
   {
-    topic: "Building Your First AI Workflow Automation: n8n vs Make vs Zapier (2025 Comparison) - Include specific feature comparisons, pricing tiers, integration counts, and step-by-step implementation guide for common automation use cases",
+    topic: "Building Your First AI Workflow Automation: n8n vs Make vs Zapier (2025 Comparison)",
+    details: "Cover specific feature comparisons, pricing tiers, integration counts, and step-by-step implementation guide for common automation use cases",
     category: "AI Services"
   },
   {
-    topic: "The Executive's Guide to AI Risk Assessment for 2026 - Include specific risk frameworks (NIST AI RMF, ISO 31000), risk categories, assessment methodologies, mitigation strategies, and board-level reporting templates",
+    topic: "The Executive's Guide to AI Risk Assessment for 2026",
+    details: "Cover specific risk frameworks (NIST AI RMF, ISO 31000), risk categories, assessment methodologies, mitigation strategies, and board-level reporting",
     category: "AI Consulting"
   }
 ];
@@ -56,55 +63,25 @@ interface BlogContent {
   metaKeywords: string;
 }
 
-async function generateBlogContent(topic: string, category: string, lovableApiKey: string): Promise<BlogContent> {
-  console.log(`Generating content for topic: ${topic.substring(0, 50)}...`);
+async function generateBlogContent(topic: string, details: string, category: string, lovableApiKey: string): Promise<BlogContent> {
+  console.log(`Generating content for: ${topic}`);
   
-  const systemPrompt = `You are an expert AI content writer for Elevated AI, an enterprise AI consulting firm. 
-Your writing style is:
-- Clear, practical, and actionable
-- Professional but accessible
-- Focused on business value and ROI
-- Uses specific examples, real tools, and concrete data
-- Avoids buzzwords and hype
+  const systemPrompt = `You are an expert AI content writer for Elevated AI, an enterprise AI consulting firm. Write clear, practical, actionable content focused on business value and ROI. Use specific examples, real tools, and concrete data. Avoid buzzwords and hype.`;
 
-CRITICAL: Your content must be SPECIFIC and DETAILED. 
-- If the topic mentions specific tools, you MUST discuss those exact tools with real features and pricing
-- If the topic mentions frameworks, you MUST explain them with real steps
-- Never write generic placeholder content
-- Include actual numbers, dates, and real-world examples
+  const userPrompt = `Write a blog post about: ${topic}
 
-Format requirements:
-- Use H2 (##) for main sections
-- Use H3 (###) for subsections
-- Use bullet points with bold lead-ins (e.g., "**Key Point:** explanation")
-- Include at least one "**Pro Tip:**" blockquote section
-- Aim for 1500-2000 words
-- Structure: Problem/Opportunity → Solution/Tools → Implementation → Conclusion`;
-
-  const userPrompt = `Write a comprehensive blog post about: ${topic}
+Details to include: ${details}
 
 Category: ${category}
 
 Requirements:
-1. Create an SEO-optimized title (50-60 chars)
-2. Write a compelling excerpt (150-160 chars)
-3. Write the full article with specific, detailed content
-4. Generate 5-7 relevant tags
-5. Estimate read time
-6. Create meta description and keywords
-
-IMPORTANT: Be SPECIFIC. Include real tool names, real pricing, real features, real statistics. No generic content.
-
-Return JSON format:
-{
-  "title": "SEO title",
-  "excerpt": "Compelling excerpt",
-  "content": "Full HTML content with proper headings",
-  "tags": ["tag1", "tag2"],
-  "readTime": "X min read",
-  "metaDescription": "Meta description",
-  "metaKeywords": "keyword1, keyword2"
-}`;
+- Title: SEO-optimized, 50-60 characters
+- Excerpt: Compelling summary, 150-160 characters  
+- Content: Use H2 (##) and H3 (###) headings, bullet points with bold lead-ins, include a Pro Tip blockquote. Be SPECIFIC with real tool names, real pricing, real features.
+- Tags: 5-7 relevant keywords
+- Read time: Estimate based on content length
+- Meta description: 155 characters max
+- Meta keywords: Comma-separated SEO keywords`;
 
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
@@ -118,38 +95,91 @@ Return JSON format:
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.7,
-      max_tokens: 4000
+      tools: [{
+        type: "function",
+        function: {
+          name: "create_blog_post",
+          description: "Create a complete blog post with all required fields",
+          parameters: {
+            type: "object",
+            properties: {
+              title: { 
+                type: "string", 
+                description: "SEO-optimized title, 50-60 characters" 
+              },
+              excerpt: { 
+                type: "string", 
+                description: "Compelling summary, 150-160 characters" 
+              },
+              content: { 
+                type: "string", 
+                description: "Full article content in HTML format with h2, h3, p, ul, li, blockquote tags. Must be 1000-1500 words with specific details." 
+              },
+              tags: { 
+                type: "array", 
+                items: { type: "string" },
+                description: "5-7 relevant keyword tags"
+              },
+              readTime: { 
+                type: "string", 
+                description: "Estimated read time, e.g. '8 min read'" 
+              },
+              metaDescription: { 
+                type: "string", 
+                description: "SEO meta description, max 155 characters" 
+              },
+              metaKeywords: { 
+                type: "string", 
+                description: "Comma-separated SEO keywords" 
+              }
+            },
+            required: ["title", "excerpt", "content", "tags", "readTime", "metaDescription", "metaKeywords"],
+            additionalProperties: false
+          }
+        }
+      }],
+      tool_choice: { type: "function", function: { name: "create_blog_post" } }
     })
   });
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`AI generation failed: ${error}`);
+    console.error(`AI API error: ${error}`);
+    throw new Error(`AI generation failed: ${response.status}`);
   }
 
   const data = await response.json();
-  const content = data.choices[0].message.content;
   
-  // Parse JSON from response
-  const jsonMatch = content.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error("Failed to parse blog content JSON");
+  // Extract tool call arguments
+  const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+  if (!toolCall || toolCall.function.name !== "create_blog_post") {
+    console.error("Unexpected response format:", JSON.stringify(data).substring(0, 500));
+    throw new Error("No tool call in response");
   }
   
-  return JSON.parse(jsonMatch[0]);
+  const args = JSON.parse(toolCall.function.arguments);
+  console.log(`Generated: "${args.title}"`);
+  
+  return {
+    title: args.title,
+    excerpt: args.excerpt,
+    content: args.content,
+    tags: args.tags,
+    readTime: args.readTime,
+    metaDescription: args.metaDescription,
+    metaKeywords: args.metaKeywords
+  };
 }
 
 async function generateBlogImage(title: string, category: string, lovableApiKey: string): Promise<string> {
-  console.log(`Generating image for: ${title.substring(0, 30)}...`);
+  console.log(`Generating image for: ${title.substring(0, 40)}...`);
   
-  const imagePrompt = `Professional business photography for a blog article titled "${title}". 
-Category: ${category}
-Style: Modern corporate office environment, natural lighting, high-quality stock photo aesthetic.
-Subject: Professional business people or modern office technology relevant to ${category}.
+  const imagePrompt = `Professional business photography for blog: "${title}". 
+Style: Modern corporate office, natural lighting, high-quality stock photo.
+Subject: Professional business people or modern office technology for ${category}.
 Mood: Confident, innovative, forward-thinking.
-Technical: Photorealistic, 16:9 aspect ratio, suitable for blog hero image.
-DO NOT include: Abstract AI visualizations, neural networks, circuit patterns, or sci-fi elements.`;
+16:9 aspect ratio, photorealistic.
+NO abstract AI visuals, neural networks, or sci-fi elements.`;
 
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
@@ -158,20 +188,23 @@ DO NOT include: Abstract AI visualizations, neural networks, circuit patterns, o
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash-image-preview",
+      model: "google/gemini-2.5-flash-image",
       messages: [{ role: "user", content: imagePrompt }],
       modalities: ["image", "text"]
     })
   });
 
   if (!response.ok) {
-    throw new Error(`Image generation failed: ${await response.text()}`);
+    const errorText = await response.text();
+    console.error(`Image API error: ${errorText}`);
+    throw new Error(`Image generation failed: ${response.status}`);
   }
 
   const data = await response.json();
   const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
   
   if (!imageUrl) {
+    console.error("No image in response:", JSON.stringify(data).substring(0, 500));
     throw new Error("No image URL in response");
   }
   
@@ -200,6 +233,16 @@ async function uploadImageToStorage(supabase: any, base64Image: string, filename
   return urlData.publicUrl;
 }
 
+// Use a fallback image if image generation fails
+const FALLBACK_IMAGES: Record<string, string> = {
+  "AI Tips": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=630&fit=crop",
+  "AI Consulting": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=630&fit=crop",
+  "AI in the Workplace": "https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?w=1200&h=630&fit=crop",
+  "AI Thought Leadership": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=630&fit=crop",
+  "AI Services": "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=1200&h=630&fit=crop",
+  "AI News": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&h=630&fit=crop"
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -207,11 +250,8 @@ serve(async (req) => {
 
   try {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    
-    // One-time batch generation - auth temporarily disabled for this operation
-    // TODO: Re-enable auth after batch is complete
-    
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+    
     if (!lovableApiKey) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
@@ -223,27 +263,29 @@ serve(async (req) => {
     
     const results: { topic: string; status: string; postId?: number; error?: string }[] = [];
     
-    // Process each topic sequentially to avoid rate limits
     for (let i = 0; i < REPLACEMENT_TOPICS.length; i++) {
-      const { topic, category } = REPLACEMENT_TOPICS[i];
-      console.log(`\n[${i + 1}/${REPLACEMENT_TOPICS.length}] Processing: ${topic.substring(0, 50)}...`);
+      const { topic, details, category } = REPLACEMENT_TOPICS[i];
+      console.log(`\n[${i + 1}/${REPLACEMENT_TOPICS.length}] Processing: ${topic}`);
       
       try {
-        // Generate content
-        const blogContent = await generateBlogContent(topic, category, lovableApiKey);
-        console.log(`Generated content: ${blogContent.title}`);
+        // Generate content using tool calling
+        const blogContent = await generateBlogContent(topic, details, category, lovableApiKey);
         
-        // Generate image
-        const base64Image = await generateBlogImage(blogContent.title, category, lovableApiKey);
-        
-        // Upload image
-        const filename = `batch-${Date.now()}-${i}.png`;
-        const imageUrl = await uploadImageToStorage(supabase, base64Image, filename);
-        console.log(`Image uploaded: ${imageUrl}`);
+        // Try to generate image, use fallback if fails
+        let imageUrl: string;
+        try {
+          const base64Image = await generateBlogImage(blogContent.title, category, lovableApiKey);
+          const filename = `batch-${Date.now()}-${i}.png`;
+          imageUrl = await uploadImageToStorage(supabase, base64Image, filename);
+          console.log(`Image uploaded successfully`);
+        } catch (imgError) {
+          console.warn(`Image generation failed, using fallback: ${imgError}`);
+          imageUrl = FALLBACK_IMAGES[category] || FALLBACK_IMAGES["AI Tips"];
+        }
         
         // Generate slug
         const { data: slugData } = await supabase.rpc('generate_slug', { title: blogContent.title });
-        const slug = slugData || blogContent.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const slug = slugData || blogContent.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 80);
         
         // Get category styles
         const styles = CATEGORY_STYLES[category] || CATEGORY_STYLES["AI Tips"];
@@ -275,25 +317,26 @@ serve(async (req) => {
           throw new Error(`Insert failed: ${insertError.message}`);
         }
         
-        console.log(`Post created: ID ${post.id} - ${post.title}`);
+        console.log(`SUCCESS: Post ID ${post.id} - ${post.title}`);
         results.push({ topic: blogContent.title, status: 'success', postId: post.id });
         
-        // Brief delay between posts to avoid rate limits
+        // Delay between posts
         if (i < REPLACEMENT_TOPICS.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 3000));
+          await new Promise(resolve => setTimeout(resolve, 2000));
         }
         
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error(`Failed to generate post for topic ${i + 1}: ${errorMessage}`);
-        results.push({ topic: topic.substring(0, 50), status: 'failed', error: errorMessage });
+        console.error(`FAILED [${i + 1}]: ${errorMessage}`);
+        results.push({ topic, status: 'failed', error: errorMessage });
       }
     }
     
     const successCount = results.filter(r => r.status === 'success').length;
     const failCount = results.filter(r => r.status === 'failed').length;
     
-    console.log(`\nBatch generation complete: ${successCount} success, ${failCount} failed`);
+    console.log(`\n=== BATCH COMPLETE ===`);
+    console.log(`Success: ${successCount}, Failed: ${failCount}`);
     
     return new Response(JSON.stringify({
       message: `Batch generation complete`,
