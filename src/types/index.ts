@@ -43,6 +43,7 @@ export interface DownloadableItem {
 
 export interface BlogPost {
   id: number | string;
+  slug?: string;
   title: string;
   excerpt: string;
   category: string;

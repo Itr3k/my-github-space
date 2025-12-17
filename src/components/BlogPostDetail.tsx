@@ -1,26 +1,36 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { ArrowLeft, Calendar, Clock, User, Share2, ArrowRight, Twitter, Linkedin, Copy, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import DOMPurify from 'dompurify';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { useBlogPost, useBlogPosts } from '@/hooks/useData';
+import { useBlogPostBySlug, useBlogPosts } from '@/hooks/useData';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "./ui/popover";
 
+// Helper to strip HTML tags for plain text
+const stripHtml = (html: string): string => {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || '';
+};
+
 export const BlogPostDetail = () => {
-   const { id } = useParams();
-   const { data: post, isLoading } = useBlogPost(id);
+   const { slug } = useParams();
+   const { data: post, isLoading } = useBlogPostBySlug(slug);
    const { data: allPosts = [] } = useBlogPosts();
    
-   const relatedPosts = allPosts.filter(p => String(p.id) !== String(id)).slice(0, 3);
+   const relatedPosts = allPosts.filter(p => p.slug !== slug).slice(0, 3);
+   
+   const canonicalUrl = `https://elevatedai.co/blog/${slug}`;
+   const articleBodyText = post?.content ? stripHtml(post.content) : '';
 
    const handleShare = (platform: 'twitter' | 'linkedin' | 'copy') => {
-     const url = window.location.href;
+     const url = canonicalUrl;
      const title = post?.title || 'Check out this article';
  
      if (platform === 'copy') {
@@ -69,17 +79,82 @@ export const BlogPostDetail = () => {
   // Truncate title for breadcrumb
   const truncatedTitle = post.title.length > 40 ? post.title.substring(0, 40) + '...' : post.title;
 
+  // JSON-LD Article Schema with full articleBody
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.excerpt,
+    "image": post.image,
+    "datePublished": post.date ? new Date(post.date).toISOString() : new Date().toISOString(),
+    "dateModified": post.date ? new Date(post.date).toISOString() : new Date().toISOString(),
+    "author": {
+      "@type": "Person",
+      "name": post.author?.name || "Elevated AI Team",
+      "url": "https://elevatedai.co/about"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Elevated AI",
+      "url": "https://elevatedai.co",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://elevatedai.co/favicon.ico"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": canonicalUrl
+    },
+    "articleBody": articleBodyText,
+    "wordCount": articleBodyText.split(/\s+/).length,
+    "keywords": post.tags?.join(', ') || post.category
+  };
+
   return (
+    <>
+      <Helmet>
+        <title>{post.title} | Elevated AI Blog</title>
+        <meta name="description" content={post.excerpt} />
+        <meta name="keywords" content={post.tags?.join(', ') || `${post.category}, AI consulting, enterprise AI`} />
+        <link rel="canonical" href={canonicalUrl} />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={post.excerpt} />
+        <meta property="og:image" content={post.image} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="Elevated AI" />
+        <meta property="article:published_time" content={post.date ? new Date(post.date).toISOString() : ''} />
+        <meta property="article:author" content={post.author?.name || 'Elevated AI Team'} />
+        <meta property="article:section" content={post.category} />
+        {post.tags?.map((tag, i) => (
+          <meta key={i} property="article:tag" content={tag} />
+        ))}
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={post.excerpt} />
+        <meta name="twitter:image" content={post.image} />
+        
+        {/* JSON-LD Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify(articleSchema)}
+        </script>
+      </Helmet>
+      
     <div className="pt-24 pb-24 min-h-screen bg-[#050508]">
       
       {/* Breadcrumb Navigation */}
       <div className="max-w-6xl mx-auto px-6 mb-8">
         <div className="flex items-center justify-between">
-          <nav className="flex items-center gap-2 text-sm">
+          <nav className="flex items-center gap-2 text-sm" aria-label="Breadcrumb">
             <Link to="/blog" className="text-zinc-500 hover:text-white transition-colors">
               Blog
             </Link>
-            <ChevronRight className="w-4 h-4 text-zinc-600" />
+            <ChevronRight className="w-4 h-4 text-zinc-600" aria-hidden="true" />
             <span className="text-zinc-400">{truncatedTitle}</span>
           </nav>
           
@@ -95,7 +170,7 @@ export const BlogPostDetail = () => {
         <div className="flex flex-col lg:flex-row gap-12">
           
           {/* Main Content Column */}
-          <article className="flex-1 min-w-0">
+          <article className="flex-1 min-w-0" itemScope itemType="https://schema.org/Article">
             
             {/* Featured Image */}
             <motion.div
@@ -107,6 +182,7 @@ export const BlogPostDetail = () => {
                   src={post.image} 
                   alt={post.title}
                   className="w-full h-full object-cover"
+                  itemProp="image"
                 />
             </motion.div>
 
@@ -117,20 +193,22 @@ export const BlogPostDetail = () => {
               transition={{ delay: 0.1 }}
               className="mb-8"
             >
-               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-[1.15] tracking-tight">
+               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-[1.15] tracking-tight" itemProp="headline">
                  {post.title}
                </h1>
                
                {/* Meta Row */}
                <div className="flex flex-wrap items-center gap-4 text-sm pb-6 border-b border-zinc-800">
                   <div className={`px-3 py-1 rounded-full ${post.bg || 'bg-indigo-500/10'} ${post.border || 'border-indigo-500/20'} border`}>
-                    <span className={`font-semibold text-xs uppercase tracking-wider ${post.color || 'text-indigo-400'}`}>
+                    <span className={`font-semibold text-xs uppercase tracking-wider ${post.color || 'text-indigo-400'}`} itemProp="articleSection">
                       {post.category}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5 text-zinc-400">
                     <Calendar className="w-4 h-4" />
-                    {post.date}
+                    <time itemProp="datePublished" dateTime={post.date ? new Date(post.date).toISOString() : ''}>
+                      {post.date}
+                    </time>
                   </div>
                   <div className="flex items-center gap-1.5 text-zinc-400">
                     <Clock className="w-4 h-4" />
@@ -177,6 +255,7 @@ export const BlogPostDetail = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               className="blog-content"
+              itemProp="articleBody"
             >
                {post.content ? (
                  <div dangerouslySetInnerHTML={{ 
@@ -207,7 +286,7 @@ export const BlogPostDetail = () => {
             </div>
 
             {/* Author Box */}
-            <div className="mt-8 p-6 rounded-xl bg-zinc-900/50 border border-zinc-800">
+            <div className="mt-8 p-6 rounded-xl bg-zinc-900/50 border border-zinc-800" itemProp="author" itemScope itemType="https://schema.org/Person">
               <div className="flex items-center gap-4">
                 {post.author?.image ? (
                   <ImageWithFallback src={post.author.image} alt={post.author.name} className="w-14 h-14 rounded-full object-cover border border-zinc-700" />
@@ -217,8 +296,8 @@ export const BlogPostDetail = () => {
                   </div>
                 )}
                 <div>
-                  <div className="text-white font-semibold">{post.author?.name || 'Elevated AI Team'}</div>
-                  <div className="text-zinc-500 text-sm">{post.author?.role || 'AI Consulting Experts'}</div>
+                  <div className="text-white font-semibold" itemProp="name">{post.author?.name || 'Elevated AI Team'}</div>
+                  <div className="text-zinc-500 text-sm" itemProp="jobTitle">{post.author?.role || 'AI Consulting Experts'}</div>
                 </div>
               </div>
             </div>
@@ -249,7 +328,7 @@ export const BlogPostDetail = () => {
                 <div className="space-y-4">
                   {relatedPosts.slice(0, 3).map((related) => (
                     <Link 
-                      to={`/blog/${related.id}`} 
+                      to={`/blog/${related.slug || related.id}`} 
                       key={related.id} 
                       className="group block"
                     >
@@ -279,7 +358,7 @@ export const BlogPostDetail = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
            {relatedPosts.map((related) => (
-             <Link to={`/blog/${related.id}`} key={related.id} className="group block">
+             <Link to={`/blog/${related.slug || related.id}`} key={related.id} className="group block">
                 <div className="rounded-xl overflow-hidden border border-zinc-800 mb-4 aspect-[16/10] relative">
                    <ImageWithFallback 
                       src={related.image} 
@@ -305,5 +384,6 @@ export const BlogPostDetail = () => {
       </section>
 
     </div>
+    </>
   );
 };
