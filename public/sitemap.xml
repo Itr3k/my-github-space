@@ -152,40 +152,40 @@
     <priority>0.6</priority>
   </url>
   
-  <!-- Case Study Detail Pages -->
+  <!-- Case Study Detail Pages - Pre-rendered for AI Crawlers -->
   <url>
-    <loc>https://elevatedai.co/case-studies/jpmorgan</loc>
-    <lastmod>2025-12-06</lastmod>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/case-study-ssr?id=jpmorgan</loc>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/case-studies/ups</loc>
-    <lastmod>2025-12-06</lastmod>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/case-study-ssr?id=ups</loc>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/case-studies/boa</loc>
-    <lastmod>2025-12-06</lastmod>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/case-study-ssr?id=boa</loc>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/case-studies/cdw</loc>
-    <lastmod>2025-12-06</lastmod>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/case-study-ssr?id=cdw</loc>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/case-studies/anthem</loc>
-    <lastmod>2025-12-06</lastmod>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/case-study-ssr?id=anthem</loc>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://elevatedai.co/case-studies/walmart</loc>
-    <lastmod>2025-12-06</lastmod>
+    <loc>https://cqvpzkvrsdxytdohmenq.supabase.co/functions/v1/case-study-ssr?id=walmart</loc>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

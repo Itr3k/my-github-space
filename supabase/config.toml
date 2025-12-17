@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.blog-ssr]
 verify_jwt = false
+
+[functions.case-study-ssr]
+verify_jwt = false
