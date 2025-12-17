@@ -315,10 +315,47 @@ serve(async (req) => {
       // No body provided, use random selection
     }
 
-    // Select category (use custom or pick random)
+    // Input validation for custom topic
+    if (customTopic) {
+      // Reject topics that are too long (max 200 chars)
+      if (customTopic.length > 200) {
+        console.error(`Topic rejected: exceeds 200 character limit (${customTopic.length} chars)`);
+        return new Response(JSON.stringify({ error: 'Topic must be 200 characters or less' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      // Reject suspicious prompt injection patterns
+      const suspiciousPatterns = /ignore\s*(previous|all|above)|system\s*prompt|<\/?script|javascript:|data:/i;
+      if (suspiciousPatterns.test(customTopic)) {
+        console.error(`Topic rejected: suspicious pattern detected`);
+        return new Response(JSON.stringify({ error: 'Invalid topic content' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      // Sanitize: remove control characters and excessive whitespace
+      customTopic = customTopic.replace(/[\x00-\x1F\x7F]/g, '').trim().replace(/\s+/g, ' ');
+    }
+
+    // Input validation for custom category - must be in allowed list
+    if (customCategory && !CATEGORIES.includes(customCategory)) {
+      console.error(`Category rejected: "${customCategory}" not in allowed list`);
+      return new Response(JSON.stringify({ 
+        error: 'Invalid category', 
+        allowedCategories: CATEGORIES 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Select category (use validated custom or pick random)
     const category = customCategory || CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
     
-    // Select topic (use custom or pick random from category)
+    // Select topic (use validated custom or pick random from category)
     const categoryTopics = TOPIC_IDEAS[category] || TOPIC_IDEAS["AI Tips"];
     const topic = customTopic || categoryTopics[Math.floor(Math.random() * categoryTopics.length)];
     
