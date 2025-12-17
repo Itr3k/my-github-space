@@ -229,7 +229,7 @@ export const Blog = () => {
                   
                   {/* Category */}
                   <div className="flex items-center gap-3 mb-4">
-                    <span className={`px-3 py-1 rounded-full ${featuredPost.bg || 'bg-white/10'} backdrop-blur-sm text-xs font-medium ${featuredPost.color || 'text-white'}`}>
+                    <span className={`px-3 py-1 rounded-full bg-black/80 backdrop-blur-md text-xs font-medium ${featuredPost.color || 'text-white'}`}>
                       {featuredPost.category}
                     </span>
                     <span className="text-zinc-400 text-sm flex items-center gap-1">
@@ -345,7 +345,7 @@ export const Blog = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent opacity-40" />
                   
                   <div className="absolute top-3 left-3">
-                    <span className={`px-2.5 py-1 rounded-full ${post.bg || 'bg-zinc-800'} backdrop-blur-sm text-[10px] font-bold uppercase tracking-wider ${post.color || 'text-white'}`}>
+                    <span className={`px-2.5 py-1 rounded-full bg-black/80 backdrop-blur-md text-[10px] font-bold uppercase tracking-wider ${post.color || 'text-white'}`}>
                       {post.category.replace("AI ", "")}
                     </span>
                   </div>
