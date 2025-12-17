@@ -2,6 +2,8 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
+declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void };
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -27,7 +29,7 @@ interface ReviewResult {
 async function checkTitleContentAlignment(content: string, title: string, lovableApiKey: string): Promise<{ score: number; aligned: boolean; issues: string[] }> {
   console.log(`Checking title-content alignment for: "${title}"`);
   
-  const response = await fetch('https://ai.lovable.dev/api/chat', {
+  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -87,7 +89,7 @@ Does this content deliver on the title's promise?`
 async function checkContentCompleteness(content: string, title: string, category: string, lovableApiKey: string): Promise<{ score: number; complete: boolean; missing: string[] }> {
   console.log(`Checking content completeness for: "${title}"`);
   
-  const response = await fetch('https://ai.lovable.dev/api/chat', {
+  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -154,7 +156,7 @@ What elements are missing from this content?`
 async function performFactCheck(content: string, title: string, lovableApiKey: string): Promise<{ score: number; issues: string[] }> {
   console.log(`Performing fact check for: "${title}"`);
   
-  const response = await fetch('https://ai.lovable.dev/api/chat', {
+  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -225,7 +227,7 @@ async function checkBrandVoice(content: string, brandVoice: any, lovableApiKey: 
   
   console.log('Checking brand voice consistency...');
   
-  const response = await fetch('https://ai.lovable.dev/api/chat', {
+  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -292,7 +294,7 @@ async function performSubstantialRewrite(
 ): Promise<string> {
   console.log(`Performing substantial rewrite for: "${title}"`);
   
-  const response = await fetch('https://ai.lovable.dev/api/chat', {
+  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -351,186 +353,192 @@ Rewrite this content to fix all issues and deliver on the title's promise with s
   return cleanContent;
 }
 
+// Background processing function
+async function processBatchReview(dryRun: boolean) {
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const supabaseClient = createClient(supabaseUrl, serviceRoleKey!);
+
+  console.log(`Starting batch review (dryRun: ${dryRun})`);
+
+  if (!lovableApiKey) {
+    console.error('LOVABLE_API_KEY not configured');
+    return;
+  }
+
+  // Fetch brand voice profile
+  const { data: brandVoice } = await supabaseClient
+    .from('brand_voice_profile')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  // Fetch all published blog posts
+  const { data: posts, error: postsError } = await supabaseClient
+    .from('blog_posts')
+    .select('*')
+    .eq('status', 'published')
+    .order('created_at', { ascending: true });
+
+  if (postsError) {
+    console.error('Failed to fetch posts:', postsError);
+    return;
+  }
+
+  console.log(`Found ${posts?.length || 0} published posts to review`);
+
+  const results: ReviewResult[] = [];
+
+  for (const post of posts || []) {
+    console.log(`\n========== Reviewing post ${post.id}: "${post.title}" ==========`);
+    
+    try {
+      // Run all checks
+      const [alignmentResult, completenessResult, factCheckResult, brandVoiceResult] = await Promise.all([
+        checkTitleContentAlignment(post.content || '', post.title, lovableApiKey),
+        checkContentCompleteness(post.content || '', post.title, post.category, lovableApiKey),
+        performFactCheck(post.content || '', post.title, lovableApiKey),
+        checkBrandVoice(post.content || '', brandVoice, lovableApiKey),
+      ]);
+
+      const overallScore = Math.round(
+        (alignmentResult.score * 0.30) +
+        (completenessResult.score * 0.30) +
+        (factCheckResult.score * 0.25) +
+        (brandVoiceResult.score * 0.15)
+      );
+
+      const allIssues = [
+        ...alignmentResult.issues,
+        ...completenessResult.missing.map(m => `Missing: ${m}`),
+        ...factCheckResult.issues,
+        ...brandVoiceResult.issues,
+      ];
+
+      console.log(`Scores - Alignment: ${alignmentResult.score}, Completeness: ${completenessResult.score}, FactCheck: ${factCheckResult.score}, BrandVoice: ${brandVoiceResult.score}, Overall: ${overallScore}`);
+      console.log(`Issues found: ${allIssues.length}`);
+
+      // Determine if rewrite is needed
+      const needsRewrite = !alignmentResult.aligned || !completenessResult.complete || overallScore < 70;
+      
+      let status: ReviewResult['status'] = 'passed';
+      let rewritten = false;
+
+      if (needsRewrite) {
+        console.log(`Post needs rewrite - alignment: ${alignmentResult.aligned}, completeness: ${completenessResult.complete}, score: ${overallScore}`);
+        
+        if (!dryRun) {
+          // Perform rewrite
+          const rewrittenContent = await performSubstantialRewrite(
+            post.content || '',
+            post.title,
+            post.category,
+            allIssues,
+            lovableApiKey
+          );
+
+          if (rewrittenContent && rewrittenContent.length > 500) {
+            // Update the post
+            const { error: updateError } = await supabaseClient
+              .from('blog_posts')
+              .update({ content: rewrittenContent })
+              .eq('id', post.id);
+
+            if (updateError) {
+              console.error(`Failed to update post ${post.id}:`, updateError);
+              status = 'error';
+            } else {
+              console.log(`Successfully rewrote post ${post.id}`);
+              status = 'rewritten';
+              rewritten = true;
+            }
+
+            // Save review record
+            await supabaseClient.from('editor_reviews').insert({
+              blog_post_id: post.id,
+              review_type: 'batch_review',
+              original_content: post.content,
+              edited_content: rewrittenContent,
+              score: overallScore,
+              issues_found: allIssues,
+              corrections_made: ['Substantial rewrite performed'],
+              ai_reasoning: `Alignment: ${alignmentResult.score}, Completeness: ${completenessResult.score}, FactCheck: ${factCheckResult.score}`,
+            });
+          } else {
+            status = 'flagged';
+          }
+        } else {
+          status = 'flagged';
+        }
+      }
+
+      results.push({
+        postId: post.id,
+        title: post.title,
+        status,
+        issues: allIssues,
+        scores: {
+          alignment: alignmentResult.score,
+          completeness: completenessResult.score,
+          factCheck: factCheckResult.score,
+          brandVoice: brandVoiceResult.score,
+          overall: overallScore,
+        },
+        rewritten,
+      });
+
+      // Add delay between posts to avoid rate limits
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+    } catch (postError) {
+      const errorMessage = postError instanceof Error ? postError.message : 'Unknown error';
+      console.error(`Error reviewing post ${post.id}:`, postError);
+      results.push({
+        postId: post.id,
+        title: post.title,
+        status: 'error',
+        issues: [],
+        scores: { alignment: 0, completeness: 0, factCheck: 0, brandVoice: 0, overall: 0 },
+        rewritten: false,
+        error: errorMessage,
+      });
+    }
+  }
+
+  // Summary
+  const summary = {
+    totalPosts: results.length,
+    passed: results.filter(r => r.status === 'passed').length,
+    rewritten: results.filter(r => r.status === 'rewritten').length,
+    flagged: results.filter(r => r.status === 'flagged').length,
+    errors: results.filter(r => r.status === 'error').length,
+    dryRun,
+  };
+
+  console.log('\n========== BATCH REVIEW COMPLETE ==========');
+  console.log(JSON.stringify(summary, null, 2));
+  console.log('\nDetailed results:');
+  console.log(JSON.stringify(results, null, 2));
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Validate API key
-    const authHeader = req.headers.get('Authorization');
-    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-    
-    if (!authHeader || !authHeader.includes(serviceRoleKey || '')) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
     const { dryRun = true } = await req.json().catch(() => ({}));
     
-    console.log(`Starting batch review (dryRun: ${dryRun})`);
+    // Start background processing
+    EdgeRuntime.waitUntil(processBatchReview(dryRun));
 
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseClient = createClient(supabaseUrl, serviceRoleKey!);
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
-
-    if (!lovableApiKey) {
-      throw new Error('LOVABLE_API_KEY not configured');
-    }
-
-    // Fetch brand voice profile
-    const { data: brandVoice } = await supabaseClient
-      .from('brand_voice_profile')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-
-    // Fetch all published blog posts
-    const { data: posts, error: postsError } = await supabaseClient
-      .from('blog_posts')
-      .select('*')
-      .eq('status', 'published')
-      .order('created_at', { ascending: true });
-
-    if (postsError) throw postsError;
-
-    console.log(`Found ${posts?.length || 0} published posts to review`);
-
-    const results: ReviewResult[] = [];
-
-    for (const post of posts || []) {
-      console.log(`\n========== Reviewing post ${post.id}: "${post.title}" ==========`);
-      
-      try {
-        // Run all checks
-        const [alignmentResult, completenessResult, factCheckResult, brandVoiceResult] = await Promise.all([
-          checkTitleContentAlignment(post.content || '', post.title, lovableApiKey),
-          checkContentCompleteness(post.content || '', post.title, post.category, lovableApiKey),
-          performFactCheck(post.content || '', post.title, lovableApiKey),
-          checkBrandVoice(post.content || '', brandVoice, lovableApiKey),
-        ]);
-
-        const overallScore = Math.round(
-          (alignmentResult.score * 0.30) +
-          (completenessResult.score * 0.30) +
-          (factCheckResult.score * 0.25) +
-          (brandVoiceResult.score * 0.15)
-        );
-
-        const allIssues = [
-          ...alignmentResult.issues,
-          ...completenessResult.missing.map(m => `Missing: ${m}`),
-          ...factCheckResult.issues,
-          ...brandVoiceResult.issues,
-        ];
-
-        console.log(`Scores - Alignment: ${alignmentResult.score}, Completeness: ${completenessResult.score}, FactCheck: ${factCheckResult.score}, BrandVoice: ${brandVoiceResult.score}, Overall: ${overallScore}`);
-        console.log(`Issues found: ${allIssues.length}`);
-
-        // Determine if rewrite is needed
-        const needsRewrite = !alignmentResult.aligned || !completenessResult.complete || overallScore < 70;
-        
-        let status: ReviewResult['status'] = 'passed';
-        let rewritten = false;
-
-        if (needsRewrite) {
-          console.log(`Post needs rewrite - alignment: ${alignmentResult.aligned}, completeness: ${completenessResult.complete}, score: ${overallScore}`);
-          
-          if (!dryRun) {
-            // Perform rewrite
-            const rewrittenContent = await performSubstantialRewrite(
-              post.content || '',
-              post.title,
-              post.category,
-              allIssues,
-              lovableApiKey
-            );
-
-            if (rewrittenContent && rewrittenContent.length > 500) {
-              // Update the post
-              const { error: updateError } = await supabaseClient
-                .from('blog_posts')
-                .update({ content: rewrittenContent })
-                .eq('id', post.id);
-
-              if (updateError) {
-                console.error(`Failed to update post ${post.id}:`, updateError);
-                status = 'error';
-              } else {
-                console.log(`Successfully rewrote post ${post.id}`);
-                status = 'rewritten';
-                rewritten = true;
-              }
-
-              // Save review record
-              await supabaseClient.from('editor_reviews').insert({
-                blog_post_id: post.id,
-                review_type: 'batch_review',
-                original_content: post.content,
-                edited_content: rewrittenContent,
-                score: overallScore,
-                issues_found: allIssues,
-                corrections_made: ['Substantial rewrite performed'],
-                ai_reasoning: `Alignment: ${alignmentResult.score}, Completeness: ${completenessResult.score}, FactCheck: ${factCheckResult.score}`,
-              });
-            } else {
-              status = 'flagged';
-            }
-          } else {
-            status = 'flagged';
-          }
-        }
-
-        results.push({
-          postId: post.id,
-          title: post.title,
-          status,
-          issues: allIssues,
-          scores: {
-            alignment: alignmentResult.score,
-            completeness: completenessResult.score,
-            factCheck: factCheckResult.score,
-            brandVoice: brandVoiceResult.score,
-            overall: overallScore,
-          },
-          rewritten,
-        });
-
-        // Add delay between posts to avoid rate limits
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-      } catch (postError) {
-        const errorMessage = postError instanceof Error ? postError.message : 'Unknown error';
-        console.error(`Error reviewing post ${post.id}:`, postError);
-        results.push({
-          postId: post.id,
-          title: post.title,
-          status: 'error',
-          issues: [],
-          scores: { alignment: 0, completeness: 0, factCheck: 0, brandVoice: 0, overall: 0 },
-          rewritten: false,
-          error: errorMessage,
-        });
-      }
-    }
-
-    // Summary
-    const summary = {
-      totalPosts: results.length,
-      passed: results.filter(r => r.status === 'passed').length,
-      rewritten: results.filter(r => r.status === 'rewritten').length,
-      flagged: results.filter(r => r.status === 'flagged').length,
-      errors: results.filter(r => r.status === 'error').length,
+    return new Response(JSON.stringify({ 
+      message: 'Batch review started in background',
       dryRun,
-    };
-
-    console.log('\n========== BATCH REVIEW COMPLETE ==========');
-    console.log(JSON.stringify(summary, null, 2));
-
-    return new Response(JSON.stringify({ summary, results }), {
+      note: 'Check edge function logs for progress and results'
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
