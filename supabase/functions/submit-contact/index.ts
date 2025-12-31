@@ -83,6 +83,50 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Contact submission stored successfully:', data.id);
 
+    // Send to Pipedream webhooks for Notion CRM and Outlook integration
+    const pipedreamPayload = {
+      id: data.id,
+      name: sanitizedData.name,
+      email: sanitizedData.email,
+      company: sanitizedData.company,
+      areaOfInterest: sanitizedData.area_of_interest,
+      message: sanitizedData.message,
+      source: sanitizedData.source,
+      submittedAt: new Date().toISOString(),
+    };
+
+    // Send to Notion CRM webhook
+    const notionWebhookUrl = Deno.env.get('PIPEDREAM_NOTION_WEBHOOK_URL');
+    if (notionWebhookUrl) {
+      try {
+        const notionResponse = await fetch(notionWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(pipedreamPayload),
+        });
+        console.log('Pipedream Notion webhook response:', notionResponse.status);
+      } catch (webhookError) {
+        console.error('Error sending to Notion webhook:', webhookError);
+        // Don't fail the request if webhook fails
+      }
+    }
+
+    // Send to Outlook webhook (for meeting requests from consultation form)
+    const outlookWebhookUrl = Deno.env.get('PIPEDREAM_OUTLOOK_WEBHOOK_URL');
+    if (outlookWebhookUrl && sanitizedData.source === 'consultation') {
+      try {
+        const outlookResponse = await fetch(outlookWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(pipedreamPayload),
+        });
+        console.log('Pipedream Outlook webhook response:', outlookResponse.status);
+      } catch (webhookError) {
+        console.error('Error sending to Outlook webhook:', webhookError);
+        // Don't fail the request if webhook fails
+      }
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 
