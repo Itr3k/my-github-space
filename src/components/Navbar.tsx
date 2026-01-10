@@ -89,13 +89,13 @@ export const Navbar = () => {
 
           {/* Desktop Links */}
           <div className={`hidden md:flex items-center gap-1 p-1 rounded-full ${isScrolled ? 'bg-white/5 border border-white/5' : ''}`}>
-            {/* Services Dropdown */}
+            {/* How We Help Dropdown */}
             <div ref={servicesRef} className="relative">
               <button 
                 onClick={() => setIsServicesOpen(!isServicesOpen)}
                 className="flex items-center gap-1 px-4 py-1.5 text-zinc-400 hover:text-white text-sm font-medium transition-all hover:bg-white/10 rounded-full bg-transparent border-none cursor-pointer"
               >
-                Services
+                How We Help
                 <ChevronDown className={`w-3 h-3 transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
               </button>
               
@@ -134,21 +134,26 @@ export const Navbar = () => {
               </AnimatePresence>
             </div>
             
-            {["Blog", "Case Studies", "Resources"].map((item) => (
-              <button 
-                key={item} 
-                onClick={() => handleNavigation(item)}
-                className="px-4 py-1.5 text-zinc-400 hover:text-white text-sm font-medium transition-all hover:bg-white/10 rounded-full bg-transparent border-none cursor-pointer"
-              >
-                {item}
-              </button>
-            ))}
+            {/* Governance & Risk - Direct Link */}
+            <Link 
+              to="/ai-governance"
+              className="px-4 py-1.5 text-zinc-400 hover:text-white text-sm font-medium transition-all hover:bg-white/10 rounded-full"
+            >
+              Governance & Risk
+            </Link>
+            
+            <Link 
+              to="/contact"
+              className="px-4 py-1.5 text-zinc-400 hover:text-white text-sm font-medium transition-all hover:bg-white/10 rounded-full"
+            >
+              Contact
+            </Link>
           </div>
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/start" className="px-5 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-zinc-200 transition-all flex items-center gap-2" style={{ color: 'black' }}>
-              Get Started
+            <Link to="/contact" className="px-5 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-zinc-200 transition-all flex items-center gap-2" style={{ color: 'black' }}>
+              Request a Conversation
               <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
@@ -167,7 +172,7 @@ export const Navbar = () => {
           <div className="absolute top-full left-0 right-0 p-4 bg-[#0A0A0F] border-b border-white/10 shadow-2xl">
              {/* Mobile Services Section */}
              <div className="mb-2">
-               <div className="px-4 py-2 text-xs font-bold text-zinc-500 uppercase tracking-wider">Services</div>
+               <div className="px-4 py-2 text-xs font-bold text-zinc-500 uppercase tracking-wider">How We Help</div>
                {SERVICES.map((service) => (
                  <Link
                    key={service.path}
@@ -181,23 +186,25 @@ export const Navbar = () => {
              </div>
              
              <div className="border-t border-white/10 pt-2">
-               {["Solutions", "Blog", "Case Studies", "Resources"].map((item) => (
-                 <button 
-                   key={item}
-                   onClick={() => {
-                     handleNavigation(item);
-                     setIsMobileMenuOpen(false);
-                   }}
-                   className="w-full text-left block px-4 py-3 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white font-medium transition-colors"
-                 >
-                   {item}
-                 </button>
-               ))}
+               <Link 
+                 to="/ai-governance"
+                 onClick={() => setIsMobileMenuOpen(false)}
+                 className="block px-4 py-3 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white font-medium transition-colors"
+               >
+                 Governance & Risk
+               </Link>
+               <Link 
+                 to="/contact"
+                 onClick={() => setIsMobileMenuOpen(false)}
+                 className="block px-4 py-3 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white font-medium transition-colors"
+               >
+                 Contact
+               </Link>
              </div>
              
              <div className="pt-2 border-t border-white/10 mt-2">
-                <Link to="/start" className="w-full block text-center px-5 py-3 rounded-xl bg-white text-black text-sm font-medium mt-2" onClick={() => setIsMobileMenuOpen(false)}>
-                  Get Started
+                <Link to="/contact" className="w-full block text-center px-5 py-3 rounded-xl bg-white text-black text-sm font-medium mt-2" onClick={() => setIsMobileMenuOpen(false)}>
+                  Request a Conversation
                 </Link>
              </div>
           </div>
