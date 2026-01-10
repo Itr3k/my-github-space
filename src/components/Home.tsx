@@ -1,6 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Hero } from './Hero';
+import { WhoThisIsFor } from './WhoThisIsFor';
+import { WhyAIStalls } from './WhyAIStalls';
 import { TrustBar } from './TrustBar';
 import { Services } from './Services';
 import { WhyUs } from './WhyUs';
@@ -64,6 +66,8 @@ export const Home = () => {
         </script>
       </Helmet>
       <Hero />
+      <WhoThisIsFor />
+      <WhyAIStalls />
       <TrustBar />
       <Services />
       <WhyUs />

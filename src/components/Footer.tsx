@@ -1,6 +1,6 @@
 import image_8320e13332163660193ffca7e227562749e71202 from '../assets/8320e13332163660193ffca7e227562749e71202.png';
 import React from 'react';
-import { Linkedin, Twitter, Github, ArrowRight, Facebook, Instagram, Youtube, Newspaper } from 'lucide-react';
+import { Linkedin, Twitter, Github, ArrowRight, Facebook, Instagram, Youtube, Newspaper, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { TechTicker } from './ui/TechTicker';
 
@@ -15,6 +15,18 @@ export const Footer = () => {
            <TechTicker />
         </div>
 
+        {/* Voice AI Callout */}
+        <div className="text-center py-8 border-b border-white/5 mb-12">
+          <p className="text-zinc-400 text-sm mb-2">Prefer to talk it through?</p>
+          <a 
+            href="tel:+14244843844" 
+            className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+          >
+            <Phone className="w-4 h-4" />
+            Call our AI assistant—available 24/7—to see if a conversation makes sense →
+          </a>
+        </div>
+
         {/* Big CTA Card */}
         <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-b from-white/5 to-black p-12 md:p-24 text-center mb-24">
            {/* Background Effects */}
@@ -27,16 +39,16 @@ export const Footer = () => {
              </div>
              
              <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
-               Ready to Elevate Your <br /> Business?
+               Ready to Discuss Your <br /> AI Risk & Opportunity?
              </h2>
              
              <p className="text-zinc-400 text-lg max-w-xl mx-auto">
-               Let's design your next intelligent system together and unlock measurable growth with Elevated AI.
+               Let's explore whether now is the right time for a strategic AI conversation—no obligations, just clarity.
              </p>
              
              <div className="flex flex-col lg:flex-row items-center justify-center gap-6 pt-4">
-               <Link to="/book-consultation" className="px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-zinc-200 transition-colors flex items-center gap-2">
-                 Schedule Consultation
+               <Link to="/contact" className="px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-zinc-200 transition-colors flex items-center gap-2">
+                 Request an AI Readiness Conversation
                  <ArrowRight className="w-4 h-4" />
                </Link>
                

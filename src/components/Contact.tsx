@@ -57,19 +57,19 @@ export const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>Contact Elevated AI | Get in Touch for AI Consulting</title>
-        <meta name="description" content="Contact Elevated AI for enterprise AI consulting, transformation services, and automation solutions. Reach out to start your AI journey today." />
+        <title>Contact Elevated AI | Request an AI Readiness Conversation</title>
+        <meta name="description" content="Contact Elevated AI to discuss your AI risk, opportunity, and readiness. Request a conversation with our enterprise AI consultants." />
         <meta name="keywords" content="Contact Elevated AI, AI consulting contact, enterprise AI services, AI transformation inquiry" />
         <link rel="canonical" href="https://elevatedai.co/contact" />
         
         <meta property="og:title" content="Contact Elevated AI" />
-        <meta property="og:description" content="Get in touch for enterprise AI consulting and transformation services." />
+        <meta property="og:description" content="Request an AI Readiness Conversation with Elevated AI." />
         <meta property="og:url" content="https://elevatedai.co/contact" />
         <meta property="og:type" content="website" />
         
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="Contact Elevated AI" />
-        <meta name="twitter:description" content="Get in touch for enterprise AI consulting and transformation services." />
+        <meta name="twitter:description" content="Request an AI Readiness Conversation with Elevated AI." />
       </Helmet>
     <div className="pt-32 pb-24 min-h-screen">
       <div className="max-w-4xl mx-auto px-6">
@@ -78,9 +78,9 @@ export const Contact = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
         >
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-8">Contact Us</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Request a Conversation</h1>
             <p className="text-zinc-400 text-lg mb-12">
-                Ready to start your transformation? Reach out to us directly or use the form below.
+                Ready to discuss your AI risk and opportunity? Reach out to us directly or use the form below.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -116,6 +116,17 @@ export const Contact = () => {
                             <p className="text-zinc-400">+1 (424) 484-3844</p>
                             <p className="text-zinc-500 text-xs mt-1">Mon-Fri, 9am-5pm PST</p>
                         </div>
+                    </div>
+
+                    {/* Voice AI Callout */}
+                    <div className="p-6 rounded-2xl bg-indigo-500/5 border border-indigo-500/20">
+                      <p className="text-zinc-400 text-sm mb-2">Prefer to talk it through?</p>
+                      <a 
+                        href="tel:+14244843844" 
+                        className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors text-sm"
+                      >
+                        Call our AI assistant—available 24/7—to see if a conversation makes sense →
+                      </a>
                     </div>
                 </div>
 
@@ -166,7 +177,7 @@ export const Contact = () => {
                               <FormControl>
                                 <Textarea 
                                   rows={4}
-                                  placeholder="How can we help?"
+                                  placeholder="Tell us about your AI challenges and goals..."
                                   className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white"
                                   {...field} 
                                 />
@@ -180,7 +191,7 @@ export const Contact = () => {
                           className="w-full bg-white text-black font-bold py-3 rounded-xl hover:bg-zinc-200"
                           disabled={form.formState.isSubmitting}
                         >
-                          {form.formState.isSubmitting ? "Sending..." : "Send Message"}
+                          {form.formState.isSubmitting ? "Sending..." : "Request a Conversation"}
                         </Button>
                       </form>
                     </Form>

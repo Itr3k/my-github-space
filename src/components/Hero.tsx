@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowRight, PlayCircle } from 'lucide-react';
+import { ArrowRight, Phone } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 export const Hero = () => {
@@ -38,38 +38,34 @@ export const Hero = () => {
           transition={{ duration: 0.8 }}
           className="space-y-8"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_0_15px_-3px_rgba(255,255,255,0.1)] hover:border-white/20 transition-colors cursor-default">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="text-xs font-medium text-zinc-300 tracking-wide">Accepting New Enterprise Clients for Q1</span>
-          </div>
           
-          <h1 className="text-6xl md:text-8xl font-bold text-white tracking-tight leading-[0.95]">
-            Intelligent Systems <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-white to-purple-300">
-              Built for Scale
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight leading-[0.95]">
+            AI adoption without governance <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-orange-300 to-amber-300">
+              creates operational risk.
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-zinc-400 leading-relaxed max-w-2xl mx-auto font-light">
-            We design and deploy enterprise-grade AI infrastructure. 
-            From strategic roadmaps to autonomous voice agents, we help you automate the complex.
+          <p className="text-lg md:text-xl text-zinc-300 leading-relaxed max-w-3xl mx-auto font-light">
+            We help leadership teams deploy AI that scales—without compliance gaps, operational chaos, or reputational fallout.
+          </p>
+
+          <p className="text-sm md:text-base text-zinc-500 max-w-2xl mx-auto italic">
+            Built for organizations with real operations, real customers, and real consequences when AI goes wrong.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
             <Link to="/contact" className="group px-8 py-4 bg-white text-black rounded-full font-semibold hover:bg-zinc-200 transition-all shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] flex items-center gap-2">
-              Book a Consultation
+              Request an AI Readiness Conversation
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <button 
-              onClick={() => document.getElementById('methodology')?.scrollIntoView({ behavior: 'smooth' })}
+            <a 
+              href="tel:+14244843844"
               className="group px-8 py-4 rounded-full border border-white/10 bg-white/5 text-white font-medium hover:bg-white/10 transition-all flex items-center gap-2 backdrop-blur-sm"
             >
-              <PlayCircle className="w-4 h-4 text-zinc-400 group-hover:text-white transition-colors" />
-              See Methodology
-            </button>
+              <Phone className="w-4 h-4 text-zinc-400 group-hover:text-white transition-colors" />
+              Or call our AI assistant to see if this is the right time →
+            </a>
           </div>
           
           {/* Tech Stack Strip */}
